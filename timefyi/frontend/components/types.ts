@@ -6,3 +6,9 @@ export interface IconBaseProps {
   /** Optional className for Tailwind styling */
   className?: string;
 }
+
+export interface TCategoryCardProps {
+  icon?: React.ReactElement;
+  title?: string;
+  description?: string;
+}

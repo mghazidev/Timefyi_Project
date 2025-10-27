@@ -1,5 +1,5 @@
 import React from "react";
-import { IconBaseProps } from "./types";
+import { IconBaseProps } from "../types";
 
 const Logo: React.FC<IconBaseProps> = ({
   size = 32,
