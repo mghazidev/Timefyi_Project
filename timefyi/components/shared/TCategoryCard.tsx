@@ -1,5 +1,5 @@
 import React from "react";
-import { TCategoryCardProps } from "./types";
+import { TCategoryCardProps } from "../types";
 
 const TCategoryCard: React.FC<TCategoryCardProps> = ({
   icon,

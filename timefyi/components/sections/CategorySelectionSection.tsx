@@ -1,6 +1,6 @@
 import WorldIcon from "../icons/world";
 import { TCategoryCardProps } from "../types";
-import TCategoryCard from "../TCategoryCard";
+import TCategoryCard from "../shared/TCategoryCard";
 import BellIcon from "../icons/BellIcon";
 import ClockIcon from "../icons/ClockIcon";
 import DailyPlannerIcon from "../icons/DailyPlannerIcon";
