@@ -9,7 +9,7 @@ interface TTopBarProps {
 
 const TTopBar: React.FC<TTopBarProps> = ({ title }) => {
   return (
-    <header className="flex items-center justify-between px-3 border-b border-zinc-800 bg-zinc-900 text-zinc-200">
+    <header className="flex items-center justify-between pl-3 border-b border-zinc-800 bg-zinc-900 text-zinc-200">
       <div className="flex items-center gap-2">
         <Menu className="lg:hidden cursor-pointer" />
         <h1 className="text-sm text-zinc-500">Timezones</h1>
@@ -20,7 +20,7 @@ const TTopBar: React.FC<TTopBarProps> = ({ title }) => {
         </button>
       </div>
 
-      <div>
+      <div className="flex flex-wrap items-center gap-2">
         <Button variant={"ghost"}>
           <EmailIcon size={13} />
           Feedback
@@ -28,6 +28,12 @@ const TTopBar: React.FC<TTopBarProps> = ({ title }) => {
         <Button variant={"ghost"}>
           <MusicIcon size={13} />
           Focus
+        </Button>
+        <p className="font-normal text-sm text-zinc-200">
+          03 : 36<span className="text-zinc-500"> PM</span>
+        </p>
+        <Button variant={"ghost"} className="bg-zinc-800 ">
+          12 hr
         </Button>
       </div>
     </header>

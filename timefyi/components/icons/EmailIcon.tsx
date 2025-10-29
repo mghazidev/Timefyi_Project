@@ -14,9 +14,9 @@ const EmailIcon: React.FC<IconBaseProps> = ({
       viewBox="0 0 24 24"
       fill="none"
       stroke={color}
-      stroke-width="2.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       className={className}
     >
       <rect width="20" height="16" x="2" y="4" rx="2"></rect>

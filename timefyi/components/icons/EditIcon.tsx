@@ -1,7 +1,6 @@
 import React from "react";
 import { IconBaseProps } from "../types";
-
-const MusicIcon: React.FC<IconBaseProps> = ({
+const EditIcon: React.FC<IconBaseProps> = ({
   size = 48,
   color = "currentColor",
   className,
@@ -19,10 +18,10 @@ const MusicIcon: React.FC<IconBaseProps> = ({
       strokeLinejoin="round"
       className={className}
     >
-      <circle cx="8" cy="18" r="4"></circle>
-      <path d="M12 18V2l7 4"></path>
+      <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+      <path d="M18.375 2.625a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4Z"></path>
     </svg>
   );
 };
 
-export default MusicIcon;
+export default EditIcon;
