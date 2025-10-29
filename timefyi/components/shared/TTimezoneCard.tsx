@@ -9,12 +9,8 @@ const TTimezoneCard = () => {
   return (
     <div
       onClick={() => setIsActive(!isActive)}
-      className={`draggable relative flex select-none flex-col justify-between overflow-hidden rounded-2xl border p-4 text-white transition-colors sm:rounded-xl sm:p-5 cursor-pointer
-        ${
-          isActive
-            ? "border-yellow-400 shadow-[0_0_10px_rgba(255,215,0,0.4)] bg-zinc-900"
-            : "border-zinc-800 bg-zinc-900/90"
-        }`}
+      className={`draggable w-full relative flex select-none flex-col bg-zinc-900 max-h-[220px] justify-between overflow-hidden rounded-2xl border p-4 text-white transition-colors sm:rounded-xl sm:p-5 cursor-pointer
+        ${isActive ? "border-yellow-400 " : "border-zinc-800 "}`}
     >
       <div
         title="Central European Standard Time"
@@ -24,10 +20,10 @@ const TTimezoneCard = () => {
         <p className="truncate text-base text-neutral-500">Munich, Germany</p>
         <div className="z-[20] flex items-center gap-2">
           <button>
-            <EditIcon size={13} className="text-zinc-500" />
+            <EditIcon size={18} className="text-zinc-500" />
           </button>
           <button>
-            <TrashIcon size={13} className="text-zinc-500" />
+            <TrashIcon size={18} className="text-zinc-500" />
           </button>
         </div>
       </div>
