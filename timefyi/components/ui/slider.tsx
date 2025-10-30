@@ -14,6 +14,8 @@ function Slider({
   ...props
 }: React.ComponentProps<typeof SliderPrimitive.Root>) {
   const [isDragging, setIsDragging] = React.useState(false);
+  const [isHovered, setIsHovered] = React.useState(false);
+
   const _values = React.useMemo(
     () =>
       Array.isArray(value)
@@ -31,25 +33,44 @@ function Slider({
       value={value}
       min={min}
       max={max}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       className={cn(
-        "relative flex w-full touch-none items-center select-none data-[disabled]:opacity-50 data-[orientation=vertical]:h-full data-[orientation=vertical]:min-h-44 data-[orientation=vertical]:w-auto data-[orientation=vertical]:flex-col",
+        "relative flex w-full cursor-pointer touch-none items-center select-none data-[disabled]:opacity-50 data-[orientation=vertical]:h-full data-[orientation=vertical]:min-h-44 data-[orientation=vertical]:w-auto data-[orientation=vertical]:flex-col",
         className
       )}
       {...props}
     >
-      <SliderPrimitive.Track
-        data-slot="slider-track"
-        className={cn(
-          "bg-muted relative grow overflow-hidden rounded-full data-[orientation=horizontal]:h-1.5 data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-1.5"
-        )}
-      >
-        <SliderPrimitive.Range
-          data-slot="slider-range"
+      <div className="relative w-full flex items-center">
+        <span
           className={cn(
-            "bg-primary absolute data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full"
+            "absolute left-0 z-10 w-2 h-2 rounded-full -translate-x-1/2 ",
+            isHovered || isDragging ? "bg-zinc-200" : "bg-zinc-700"
           )}
-        />
-      </SliderPrimitive.Track>
+        ></span>
+
+        <SliderPrimitive.Track
+          data-slot="slider-track"
+          className={cn(
+            "relative grow overflow-hidden rounded-full  data-[orientation=horizontal]:h-1 data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-1",
+            isHovered || isDragging ? "bg-zinc-700" : "bg-zinc-700"
+          )}
+        >
+          <SliderPrimitive.Range
+            data-slot="slider-range"
+            className={cn(
+              "bg-zinc-200 absolute data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full",
+              isHovered || isDragging ? "bg-zinc-200" : "bg-zinc-700"
+            )}
+          />
+        </SliderPrimitive.Track>
+        <span
+          className={cn(
+            "absolute right-0 w-2 h-2 rounded-full translate-x-1/2 ",
+            isHovered || isDragging ? "bg-zinc-700" : "bg-zinc-700"
+          )}
+        ></span>
+      </div>
 
       {Array.from({ length: _values.length }, (_, index) => (
         <SliderPrimitive.Thumb key={index} asChild>
@@ -61,22 +82,23 @@ function Slider({
               setIsDragging(true);
             }}
             onTouchEnd={() => setIsDragging(false)}
-            className="w-8 h-8 bg-white rounded-full flex items-center justify-center"
+            className={cn(
+              "flex items-center justify-center focus:outline-none transition-all",
+              isHovered || isDragging
+                ? "w-6 h-6 bg-zinc-200 shadow-md rounded-full"
+                : "w-2 h-2 bg-zinc-700 rounded-full"
+            )}
             style={{
               pointerEvents: "auto",
-              transition: isDragging ? "none" : undefined,
               userSelect: "none",
               touchAction: "none",
             }}
           >
-            <Code2 className="w-4 h-4 text-black" />
+            {(isHovered || isDragging) && (
+              <Code2 className="w-3 h-3 text-black" />
+            )}
           </div>
         </SliderPrimitive.Thumb>
-        // <SliderPrimitive.Thumb
-        //   data-slot="slider-thumb"
-        //   key={index}
-        //   className="border-primary ring-ring/50 block size-4 shrink-0 rounded-full border bg-white shadow-sm transition-[color,box-shadow] hover:ring-4 focus-visible:ring-4 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50"
-        // />
       ))}
     </SliderPrimitive.Root>
   );

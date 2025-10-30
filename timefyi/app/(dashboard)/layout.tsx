@@ -1,22 +1,25 @@
 import React from "react";
 import TTopBar from "@/components/shared/TTopBar";
 import TSidebar from "@/components/shared/TSidebar";
+import { TimezoneViewProvider } from "../context/TimezoneViewContext";
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex bg-black text-white min-h-screen">
-      <TSidebar />
+    <TimezoneViewProvider>
+      <div className="flex bg-black text-white min-h-screen">
+        <TSidebar />
 
-      <div className="flex-1 flex flex-col">
-        <TTopBar />
+        <div className="flex-1 flex flex-col">
+          <TTopBar />
 
-        <main className="flex-1 overflow-y-auto m-3 rounded-md">
-          {children}
-        </main>
+          <main className="flex-1 overflow-y-auto m-3 rounded-md h-screen">
+            {children}
+          </main>
+        </div>
       </div>
-    </div>
+    </TimezoneViewProvider>
   );
 }

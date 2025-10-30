@@ -3,8 +3,14 @@ import React from "react";
 import PlusIcon from "../icons/PlusIcon";
 import CrossIcon from "../icons/CrossIcon";
 import GlobeIcon from "../icons/GlobeIcon";
-const TAddNewTimezoneCard = () => {
-  const [isSearchMode, setIsSearchMode] = React.useState(false);
+interface TAddNewTimezoneCardProps {
+  defaultSearchMode?: boolean;
+}
+
+const TAddNewTimezoneCard: React.FC<TAddNewTimezoneCardProps> = ({
+  defaultSearchMode = false,
+}) => {
+  const [isSearchMode, setIsSearchMode] = React.useState(defaultSearchMode);
 
   return (
     <button

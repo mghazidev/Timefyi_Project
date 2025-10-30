@@ -8,10 +8,10 @@ import MusicIcon from "../icons/MusicIcon";
 import { usePathname } from "next/navigation";
 import MenuIcon from "../icons/MenuIcon";
 import GridIcon from "../icons/GridIcon";
-
+import { useTimezoneView } from "@/app/context/TimezoneViewContext";
 const TTopBar = () => {
   const pathname = usePathname();
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const { view, toggleView } = useTimezoneView();
   const pageTitle =
     pathname === "/"
       ? "Home"
@@ -53,13 +53,13 @@ const TTopBar = () => {
           {isTimezonePage && (
             <Button
               variant={"ghost"}
+              onClick={toggleView}
               className="hover:bg-zinc-500"
-              onClick={() => setIsMenuOpen((prev) => !prev)}
             >
-              {isMenuOpen ? (
-                <GridIcon size={18} className="text-zinc-200" />
-              ) : (
+              {view === "layout1" ? (
                 <MenuIcon size={18} className="text-zinc-200" />
+              ) : (
+                <GridIcon size={18} className="text-zinc-200" />
               )}
             </Button>
           )}
