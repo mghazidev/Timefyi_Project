@@ -3,7 +3,7 @@ import React from "react";
 import EditIcon from "../icons/EditIcon";
 import TrashIcon from "../icons/TrashIcon";
 import AudioWaveform from "./TWaveform";
-const TTimezoneCard = () => {
+const TTimezoneCard = ({ name }: any) => {
   const [isActive, setIsActive] = React.useState(false);
 
   return (
@@ -17,7 +17,7 @@ const TTimezoneCard = () => {
         className="drag-handle absolute bottom-0 left-0 right-0 top-0 z-[10] bg-transparent"
       ></div>
       <div className="flex items-center justify-between gap-3">
-        <p className="truncate text-base text-neutral-500">Munich, Germany</p>
+        <p className="truncate text-base text-neutral-500">{name}</p>
         <div className="z-[20] flex items-center gap-2">
           <button>
             <EditIcon size={18} className="text-zinc-500" />

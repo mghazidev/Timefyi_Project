@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 import TTimezoneCard from "@/components/shared/TTimezoneCard";
 import TAddNewTimezoneCard from "@/components/shared/TAddNewTimezoneCard";
 import { Slider } from "@/components/ui/slider";
@@ -11,32 +12,89 @@ import {
   Dialog,
   DialogTrigger,
   DialogContent,
-  DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  useSortable,
+  rectSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 const page = () => {
   const { view } = useTimezoneView();
 
+  const [timezones, setTimezones] = React.useState([
+    { id: "1", name: "Munich, Germany" },
+    { id: "2", name: "Karachi, Pakistan" },
+    { id: "3", name: "London, UK" },
+    { id: "4", name: "Tokyo, Japan" },
+    { id: "5", name: "Tokyo, Japan" },
+    { id: "6", name: "Tokyo, Japan" },
+  ]);
+
+  const sensors = useSensors(useSensor(PointerSensor));
+
+  const handleDragEnd = (event: any) => {
+    const { active, over } = event;
+    if (active.id !== over.id) {
+      setTimezones((items) => {
+        const oldIndex = items.findIndex((item) => item.id === active.id);
+        const newIndex = items.findIndex((item) => item.id === over.id);
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  };
+
   return (
     <div className="h-full">
       {view === "layout1" ? (
-        <div
-          className="
-        grid 
-        gap-3 
-        overscroll-contain 
-        grid-cols-[repeat(auto-fill,minmax(300px,1fr))] 
-        justify-items-center
-      "
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
         >
-          <TTimezoneCard />
-          <TTimezoneCard />
-
-          <TAddNewTimezoneCard />
-        </div>
+          <SortableContext items={timezones} strategy={rectSortingStrategy}>
+            <div
+              className="
+                grid 
+                gap-3 
+                overscroll-contain 
+                grid-cols-[repeat(auto-fill,minmax(300px,1fr))] 
+                justify-items-center
+        
+                "
+            >
+              {timezones.map((tz) => (
+                <SortableTimezoneCard key={tz.id} id={tz.id} name={tz.name} />
+              ))}
+              <TAddNewTimezoneCard />
+            </div>
+          </SortableContext>
+        </DndContext>
       ) : (
+        //   <div
+        //     className="
+        //   grid
+        //   gap-3
+        //   overscroll-contain
+        //   grid-cols-[repeat(auto-fill,minmax(300px,1fr))]
+        //   justify-items-center
+        // "
+        //   >
+        //     <TTimezoneCard />
+        //     <TTimezoneCard />
+
+        //     <TAddNewTimezoneCard />
+        //   </div>
         <div className="h-[100%] w-full grid gap-3 grid-cols-[2.5fr_1fr]">
           <div className="relative flex flex-col items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900 py-14 transition-all lg:flex-grow lg:p-5">
             <div className="flex flex-col items-center justify-center">
@@ -123,3 +181,33 @@ const page = () => {
 };
 
 export default page;
+
+function SortableTimezoneCard({ id, name }: { id: string; name: string }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.7 : 1,
+    cursor: "grab",
+  };
+
+  return (
+    <div
+      className="w-full"
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+    >
+      <TTimezoneCard name={name} />
+    </div>
+  );
+}
