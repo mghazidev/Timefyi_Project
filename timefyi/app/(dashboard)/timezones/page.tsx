@@ -85,6 +85,7 @@ const page = () => {
                 showCloseButton={false}
                 className="bg-zinc-900 border border-zinc-800 max-w-lg"
               >
+                <DialogTitle hidden></DialogTitle>
                 <TAddNewTimezoneCard defaultSearchMode={true} />
               </DialogContent>
             </Dialog>
