@@ -4,8 +4,30 @@ import EditIcon from "../icons/EditIcon";
 import TrashIcon from "../icons/TrashIcon";
 import AudioWaveform from "./TWaveform";
 import RotateIcon from "../icons/RotateIcon";
-const TTimezoneCard = ({ name, listeners, attributes }: any) => {
+
+function formatHoursToLabel(hours: number) {
+  const totalMinutes = Math.round(hours * 60);
+  const hh24 = Math.floor(totalMinutes / 60) % 24;
+  const mm = totalMinutes % 60;
+  const meridiem = hh24 >= 12 ? "PM" : "AM";
+  const hh12 = hh24 % 12 === 0 ? 12 : hh24 % 12;
+  const pad = (n: number) => n.toString().padStart(2, "0");
+  return { label: `${pad(hh12)}:${pad(mm)}`, meridiem };
+}
+
+const TTimezoneCard = ({
+  name,
+  offset,
+  globalTime,
+  onGlobalTimeChange,
+  listeners,
+  attributes,
+  initialTimeHours = 2.55,
+}: any) => {
   const [isActive, setIsActive] = React.useState(false);
+
+  const localTime = (globalTime + offset + 24) % 24;
+  const { label, meridiem } = formatHoursToLabel(localTime);
 
   return (
     <div
@@ -40,15 +62,15 @@ const TTimezoneCard = ({ name, listeners, attributes }: any) => {
       <div className="my-2 flex items-center justify-between">
         <div className="flex items-center gap-2 sm:gap-3">
           <p className="font-mono text-3xl ">
-            <span>02</span>
+            <span>{label.split(":")[0]}</span>
             <span className="mx-0.5 font-serif">:</span>
-            <span>33</span>
+            <span>{label.split(":")[1]}</span>
             <span className="ml-2 font-sans font-medium text-neutral-600">
-              PM
+              {meridiem}
             </span>
           </p>
           <span className="rounded-full bg-neutral-800 px-2 py-1.5 text-sm lg:text-xs xl:text-sm text-red-500">
-            -4h
+            {offset >= 0 ? `+${offset}h` : `${offset}h`}
           </span>
         </div>
       </div>
@@ -69,7 +91,13 @@ const TTimezoneCard = ({ name, listeners, attributes }: any) => {
         onPointerDown={(e) => e.stopPropagation()}
         onClick={(e) => e.stopPropagation()}
       >
-        <AudioWaveform />
+        <AudioWaveform
+          value={localTime}
+          onChange={(newLocalTime) => {
+            const adjustedGlobalTime = (newLocalTime - offset + 24) % 24;
+            onGlobalTimeChange(adjustedGlobalTime);
+          }}
+        />
       </div>
     </div>
   );

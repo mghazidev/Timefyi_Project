@@ -31,14 +31,13 @@ import { CSS } from "@dnd-kit/utilities";
 
 const page = () => {
   const { view } = useTimezoneView();
-
+  const [globalTime, setGlobalTime] = React.useState(8.5);
   const [timezones, setTimezones] = React.useState([
-    { id: "1", name: "Munich, Germany" },
-    { id: "2", name: "Karachi, Pakistan" },
-    { id: "3", name: "London, UK" },
-    { id: "4", name: "Tokyo, Japan" },
-    { id: "5", name: "Tokyo, Japan" },
-    { id: "6", name: "Tokyo, Japan" },
+    { id: "1", name: "Munich, Germany", offset: 0 },
+    { id: "2", name: "Karachi, Pakistan", offset: -4 },
+    { id: "3", name: "London, UK", offset: +5 },
+    { id: "4", name: "Tokyo, Japan", offset: -9 },
+    { id: "5", name: "Tokyo, Japan", offset: +7 },
   ]);
 
   const sensors = useSensors(useSensor(PointerSensor));
@@ -74,7 +73,14 @@ const page = () => {
                   "
             >
               {timezones.map((tz) => (
-                <SortableTimezoneCard key={tz.id} id={tz.id} name={tz.name} />
+                <SortableTimezoneCard
+                  key={tz.id}
+                  id={tz.id}
+                  name={tz.name}
+                  offset={tz.offset}
+                  globalTime={globalTime}
+                  onGlobalTimeChange={setGlobalTime}
+                />
               ))}
               <TAddNewTimezoneCard />
             </div>
@@ -182,7 +188,19 @@ const page = () => {
 
 export default page;
 
-function SortableTimezoneCard({ id, name }: { id: string; name: string }) {
+function SortableTimezoneCard({
+  id,
+  name,
+  offset,
+  globalTime,
+  onGlobalTimeChange,
+}: {
+  id: string;
+  name: string;
+  offset: any;
+  globalTime: any;
+  onGlobalTimeChange: any;
+}) {
   const {
     attributes,
     listeners,
@@ -204,6 +222,9 @@ function SortableTimezoneCard({ id, name }: { id: string; name: string }) {
         name={name}
         listeners={listeners}
         attributes={attributes}
+        offset={offset}
+        globalTime={globalTime}
+        onGlobalTimeChange={onGlobalTimeChange}
       />
     </div>
   );
