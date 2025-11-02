@@ -65,13 +65,13 @@ const page = () => {
           <SortableContext items={timezones} strategy={rectSortingStrategy}>
             <div
               className="
-                grid 
-                gap-3 
-                overscroll-contain 
-                grid-cols-[repeat(auto-fill,minmax(300px,1fr))] 
-                justify-items-center
-        
-                "
+                  grid 
+                  gap-3 
+                  overscroll-contain 
+                  grid-cols-[repeat(auto-fill,minmax(300px,1fr))] 
+                  justify-items-center
+          
+                  "
             >
               {timezones.map((tz) => (
                 <SortableTimezoneCard key={tz.id} id={tz.id} name={tz.name} />
@@ -196,18 +196,15 @@ function SortableTimezoneCard({ id, name }: { id: string; name: string }) {
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.7 : 1,
-    cursor: "grab",
   };
 
   return (
-    <div
-      className="w-full"
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
-    >
-      <TTimezoneCard name={name} />
+    <div className="w-full" ref={setNodeRef} style={style}>
+      <TTimezoneCard
+        name={name}
+        listeners={listeners}
+        attributes={attributes}
+      />
     </div>
   );
 }

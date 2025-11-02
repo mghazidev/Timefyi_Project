@@ -3,11 +3,14 @@ import React from "react";
 import EditIcon from "../icons/EditIcon";
 import TrashIcon from "../icons/TrashIcon";
 import AudioWaveform from "./TWaveform";
-const TTimezoneCard = ({ name }: any) => {
+import RotateIcon from "../icons/RotateIcon";
+const TTimezoneCard = ({ name, listeners, attributes }: any) => {
   const [isActive, setIsActive] = React.useState(false);
 
   return (
     <div
+      {...listeners}
+      {...attributes}
       onClick={() => setIsActive(!isActive)}
       className={`draggable w-full relative flex select-none flex-col bg-zinc-900 max-h-[220px] justify-between overflow-hidden rounded-2xl border p-4 text-white transition-colors sm:rounded-xl sm:p-5 cursor-pointer
         ${isActive ? "border-yellow-400 " : "border-zinc-800 "}`}
@@ -16,13 +19,20 @@ const TTimezoneCard = ({ name }: any) => {
         title="Central European Standard Time"
         className="drag-handle absolute bottom-0 left-0 right-0 top-0 z-[10] bg-transparent"
       ></div>
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex items-center justify-between gap-3 ">
         <p className="truncate text-base text-neutral-500">{name}</p>
-        <div className="z-[20] flex items-center gap-2">
-          <button>
+        <div
+          className="z-[20] flex items-center gap-2"
+          onPointerDown={(e) => e.stopPropagation()}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button className="cursor-pointer">
+            <RotateIcon size={18} className="text-red-400" />
+          </button>
+          <button className="cursor-pointer">
             <EditIcon size={18} className="text-zinc-500" />
           </button>
-          <button>
+          <button className="cursor-pointer">
             <TrashIcon size={18} className="text-zinc-500" />
           </button>
         </div>
@@ -55,7 +65,10 @@ const TTimezoneCard = ({ name }: any) => {
           </div>
         </div>
       </div>
-      <div>
+      <div
+        onPointerDown={(e) => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
+      >
         <AudioWaveform />
       </div>
     </div>
