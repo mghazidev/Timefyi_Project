@@ -87,20 +87,6 @@ const page = () => {
           </SortableContext>
         </DndContext>
       ) : (
-        //   <div
-        //     className="
-        //   grid
-        //   gap-3
-        //   overscroll-contain
-        //   grid-cols-[repeat(auto-fill,minmax(300px,1fr))]
-        //   justify-items-center
-        // "
-        //   >
-        //     <TTimezoneCard />
-        //     <TTimezoneCard />
-
-        //     <TAddNewTimezoneCard />
-        //   </div>
         <div className="h-[100%] w-full grid gap-3 grid-cols-[2.5fr_1fr]">
           <div className="relative flex flex-col items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900 py-14 transition-all lg:flex-grow lg:p-5">
             <div className="flex flex-col items-center justify-center">

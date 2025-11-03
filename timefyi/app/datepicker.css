@@ -1,0 +1,25 @@
+/* datepicker.css */
+
+/* Dark mode for dropdowns in the date picker */
+.rd-datepicker select,
+.rdp-caption select {
+  background-color: #18181b; /* zinc-900 */
+  color: #fafafa; /* white text */
+  border: 1px solid #3f3f46; /* zinc-700 */
+  border-radius: 0.375rem;
+  padding: 2px 6px;
+}
+
+/* Dropdown hover/focus */
+.rd-datepicker select:focus,
+.rdp-caption select:focus {
+  outline: none;
+  border-color: #71717a; /* zinc-500 */
+}
+
+/* Dropdown options */
+.rd-datepicker option,
+.rdp-caption option {
+  background-color: #18181b;
+  color: #fafafa;
+}

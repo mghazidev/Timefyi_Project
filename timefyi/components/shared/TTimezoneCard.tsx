@@ -4,6 +4,7 @@ import EditIcon from "../icons/EditIcon";
 import TrashIcon from "../icons/TrashIcon";
 import AudioWaveform from "./TWaveform";
 import RotateIcon from "../icons/RotateIcon";
+import { TDatePicker } from "./TDatePicker";
 
 function formatHoursToLabel(hours: number) {
   const totalMinutes = Math.round(hours * 60);
@@ -25,6 +26,9 @@ const TTimezoneCard = ({
   initialTimeHours = 2.55,
 }: any) => {
   const [isActive, setIsActive] = React.useState(false);
+  const [selectedDate, setSelectedDate] = React.useState<Date | undefined>(
+    new Date()
+  );
 
   const localTime = (globalTime + offset + 24) % 24;
   const { label, meridiem } = formatHoursToLabel(localTime);
@@ -48,14 +52,14 @@ const TTimezoneCard = ({
           onPointerDown={(e) => e.stopPropagation()}
           onClick={(e) => e.stopPropagation()}
         >
-          <button className="cursor-pointer">
-            <RotateIcon size={18} className="text-red-400" />
+          <button className="cursor-pointer text-red-400 hover:text-zinc-200">
+            <RotateIcon size={18} />
           </button>
-          <button className="cursor-pointer">
-            <EditIcon size={18} className="text-zinc-500" />
+          <button className="cursor-pointer text-zinc-500 hover:text-zinc-200">
+            <EditIcon size={18} />
           </button>
-          <button className="cursor-pointer">
-            <TrashIcon size={18} className="text-zinc-500" />
+          <button className="cursor-pointer text-zinc-500 hover:text-zinc-200">
+            <TrashIcon size={18} />
           </button>
         </div>
       </div>
@@ -75,16 +79,12 @@ const TTimezoneCard = ({
         </div>
       </div>
       <div className="flex gap-1.5 text-sm text-neutral-500">
-        <p>GMT+1</p>·
-        <div>
-          <div>
-            <button
-              className="z-50 cursor-pointer border-b border-dashed border-current leading-tight hover:text-neutral-300 focus:outline-none relative z-[20] cursor-pointer"
-              value="Oct 28"
-            >
-              Oct 28
-            </button>
-          </div>
+        <p>GMT+1</p>.
+        <div
+          onPointerDown={(e) => e.stopPropagation()}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <TDatePicker value={selectedDate} onChange={setSelectedDate} />
         </div>
       </div>
       <div
