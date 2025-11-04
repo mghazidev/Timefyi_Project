@@ -6,6 +6,7 @@ import CrossIcon from "../icons/CrossIcon";
 import GlobeIcon from "../icons/GlobeIcon";
 import { DateTime } from "luxon";
 import { timezoneData, TimezoneData } from "@/lib/timezoneData";
+import Fuse from "fuse.js";
 
 interface TAddNewTimezoneCardProps {
   defaultSearchMode?: boolean;
@@ -29,20 +30,19 @@ const TAddNewTimezoneCard: React.FC<TAddNewTimezoneCardProps> = ({
   const [newZone, setNewZone] = React.useState("");
   const [suggestions, setSuggestions] = React.useState<TimezoneData[]>([]);
 
-  // handle search filtering
   React.useEffect(() => {
     if (!newZone.trim()) {
       setSuggestions([]);
       return;
     }
 
-    const filtered = timezoneData.filter(
-      (t) =>
-        t.country.toLowerCase().includes(newZone.toLowerCase()) ||
-        t.city.toLowerCase().includes(newZone.toLowerCase())
-    );
+    const fuse = new Fuse(timezoneData, {
+      keys: ["city", "country", "zone"],
+      threshold: 0.3,
+    });
 
-    setSuggestions(filtered.slice(0, 8));
+    const results = fuse.search(newZone);
+    setSuggestions(results.slice(0, 8).map((r) => r.item));
   }, [newZone]);
 
   const handleSelectTimezone = (zone: string) => {
