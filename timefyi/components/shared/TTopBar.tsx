@@ -9,9 +9,15 @@ import { usePathname } from "next/navigation";
 import MenuIcon from "../icons/MenuIcon";
 import GridIcon from "../icons/GridIcon";
 import { useTimezoneView } from "@/app/context/TimezoneViewContext";
+import { useInterval } from "@/app/hooks/useInterval";
+import { DateTime } from "luxon";
 const TTopBar = () => {
   const pathname = usePathname();
   const { view, toggleView } = useTimezoneView();
+  const [localTime, setLocalTime] = React.useState("");
+  // const [zone, setZone] = React.useState("");
+  const [is24Hour, setIs24Hour] = React.useState(false);
+
   const pageTitle =
     pathname === "/"
       ? "Home"
@@ -23,6 +29,19 @@ const TTopBar = () => {
           ?.replace(/\b\w/g, (c) => c.toUpperCase()) || "Page";
 
   const isTimezonePage = pathname === "/timezones";
+
+  const updateTime = React.useCallback(() => {
+    const zoneName = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const now = DateTime.now().setZone(zoneName);
+    const format = is24Hour ? "HH : mm" : "hh : mm a";
+    setLocalTime(now.toFormat(format));
+  }, [is24Hour]);
+
+  React.useEffect(() => {
+    updateTime();
+  }, [updateTime]);
+
+  useInterval(updateTime, 1000);
 
   return (
     <header className="flex items-center justify-between pl-3 border-b border-zinc-800 bg-zinc-900 text-zinc-200">
@@ -46,10 +65,19 @@ const TTopBar = () => {
           Focus
         </Button>
         <p className="font-normal text-sm text-zinc-200">
-          03 : 36<span className="text-zinc-500"> PM</span>
+          {" "}
+          {localTime.split(":")[0]}
+          <span className="blink-colon">:</span>
+          {localTime.split(":")[1]}
         </p>
-        <div className="flex gap-0 items-center bg-zinc-800">
-          <Button variant={"ghost"}>12 hr</Button>
+        <div className="flex gap-0 items-center bg-zinc-800 ">
+          <Button
+            variant={"ghost"}
+            className="hover:bg-zinc-700"
+            onClick={() => setIs24Hour((prev) => !prev)}
+          >
+            {is24Hour ? "24 hr" : "12 hr"}
+          </Button>
           {isTimezonePage && (
             <Button
               variant={"ghost"}

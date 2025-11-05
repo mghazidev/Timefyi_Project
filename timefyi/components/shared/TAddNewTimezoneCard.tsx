@@ -8,30 +8,21 @@ import { DateTime } from "luxon";
 import { timezoneData, TimezoneData } from "@/lib/timezoneData";
 import Fuse from "fuse.js";
 
-interface TAddNewTimezoneCardProps {
+type TAddNewTimezoneCardProps = {
+  onAddTimezone: (tz: { id: string; name: string; offset: number }) => void;
   defaultSearchMode?: boolean;
-}
-
-interface Timezone {
-  label: string;
-  zone: string;
-}
+};
 
 const TAddNewTimezoneCard: React.FC<TAddNewTimezoneCardProps> = ({
+  onAddTimezone,
   defaultSearchMode = false,
 }) => {
   const [isSearchMode, setIsSearchMode] = React.useState(defaultSearchMode);
-  const [timezones, setTimezones] = React.useState<Timezone[]>([
-    {
-      label: "Local Time",
-      zone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    },
-  ]);
-  const [newZone, setNewZone] = React.useState("");
+  const [query, setQuery] = React.useState("");
   const [suggestions, setSuggestions] = React.useState<TimezoneData[]>([]);
 
   React.useEffect(() => {
-    if (!newZone.trim()) {
+    if (!query.trim()) {
       setSuggestions([]);
       return;
     }
@@ -41,41 +32,36 @@ const TAddNewTimezoneCard: React.FC<TAddNewTimezoneCardProps> = ({
       threshold: 0.3,
     });
 
-    const results = fuse.search(newZone);
+    const results = fuse.search(query);
     setSuggestions(results.slice(0, 8).map((r) => r.item));
-  }, [newZone]);
-
-  const handleSelectTimezone = (zone: string) => {
-    try {
-      const time = DateTime.now().setZone(zone);
-      if (!time.isValid) throw new Error("Invalid timezone");
-
-      setTimezones([...timezones, { label: zone, zone }]);
-      setNewZone("");
-      setIsSearchMode(false);
-      setSuggestions([]);
-    } catch {
-      alert("Invalid timezone name! Example: Asia/Karachi");
-    }
-  };
+  }, [query]);
 
   const formatOffset = (zone: string) => {
-    const offset = DateTime.now().setZone(zone).offset; // minutes
-    const hours = Math.floor(offset / 60);
-    const minutes = Math.abs(offset % 60);
-    const sign = offset >= 0 ? "+" : "-";
-    return `GMT${sign}${String(Math.abs(hours)).padStart(2, "0")}:${String(
-      minutes
-    ).padStart(2, "0")}`;
+    const offsetMinutes = DateTime.now().setZone(zone).offset; // minutes
+    const offsetHours = offsetMinutes / 60;
+    return offsetHours;
   };
 
-  const formatLabel = (city: string, country: string) => {
-    return `${city}, ${country}`;
+  const handleSelectTimezone = (
+    city: string,
+    country: string,
+    zone: string
+  ) => {
+    const offset = formatOffset(zone);
+    onAddTimezone({
+      id: `${zone}-${Date.now()}`,
+      name: `${city}, ${country}`,
+      offset,
+    });
+    setQuery("");
+    setIsSearchMode(false);
+    setSuggestions([]);
   };
+
   return (
     <button
       onClick={() => !isSearchMode && setIsSearchMode(true)}
-      className="relative flex w-full cursor-pointer min-h-[220px] flex-col items-center justify-center rounded-md bg-zinc-900 p-4 text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-zinc-200 sm:min-h-[217px]"
+      className="relative flex w-full cursor-pointer flex-col items-center justify-center rounded-2xl bg-zinc-900 p-4 text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-zinc-200 sm:min-h-[210px]"
     >
       {!isSearchMode && (
         <>
@@ -93,8 +79,8 @@ const TAddNewTimezoneCard: React.FC<TAddNewTimezoneCardProps> = ({
               <div className="relative">
                 <input
                   type="text"
-                  value={newZone}
-                  onChange={(e) => setNewZone(e.target.value)}
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
                   placeholder="Timezone, city, or country"
                   className="w-full text-base text-zinc-200 outline-none placeholder-zinc-500 bg-transparent"
                   autoFocus
@@ -106,7 +92,7 @@ const TAddNewTimezoneCard: React.FC<TAddNewTimezoneCardProps> = ({
               onClick={(e) => {
                 e.stopPropagation();
                 setIsSearchMode(false);
-                setNewZone("");
+                setQuery("");
                 setSuggestions([]);
               }}
               className="p-1 text-zinc-500 hover:text-zinc-200 transition cursor-pointer"
@@ -118,20 +104,22 @@ const TAddNewTimezoneCard: React.FC<TAddNewTimezoneCardProps> = ({
           {suggestions.length > 0 && (
             <div className="mt-2 max-h-[140px] overflow-y-auto bg-transparent scrollbar-thin scrollbar-thumb-neutral-700 scrollbar-track-transparent">
               {suggestions.map(({ city, country, zone }) => {
-                const offset = formatOffset(zone);
-                const label = formatLabel(city, country);
-                const key = `${zone}::${city.replace(/\s+/g, "_")}`;
+                const offsetHours = formatOffset(zone);
+                const offsetLabel =
+                  offsetHours >= 0 ? `GMT+${offsetHours}` : `GMT${offsetHours}`;
+                const label = `${city}, ${country}`;
+                const key = `${zone}-${city.replace(/\s+/g, "_")}`;
                 return (
                   <div
                     key={key}
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleSelectTimezone(zone);
+                      handleSelectTimezone(city, country, zone);
                     }}
                     className="flex items-center   gap-2 px-3 py-1 hover:bg-zinc-700 cursor-pointer text-zinc-500 transition rounded-md"
                   >
                     <span className="text-xs bg-zinc-900 text-zinc-200 px-2 py-1 rounded-md">
-                      {offset}
+                      {offsetLabel}
                     </span>
                     <span className="text-sm text-zinc-500 truncate">
                       {label}

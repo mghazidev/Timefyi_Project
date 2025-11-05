@@ -8,6 +8,8 @@ import RotateIcon from "@/components/icons/RotateIcon";
 import PlusIcon from "@/components/icons/PlusIcon";
 import TrashIcon from "@/components/icons/TrashIcon";
 import { useTimezoneView } from "@/app/context/TimezoneViewContext";
+import { useUserTimezone } from "@/app/hooks/useUserTimezone";
+import { useTimezoneClock } from "@/app/hooks/useTimezoneClock";
 import {
   Dialog,
   DialogTrigger,
@@ -31,26 +33,36 @@ import { CSS } from "@dnd-kit/utilities";
 
 const page = () => {
   const { view } = useTimezoneView();
-  const [globalTime, setGlobalTime] = React.useState(8.5);
-  const [timezones, setTimezones] = React.useState([
-    { id: "1", name: "Munich, Germany", offset: 0 },
-    { id: "2", name: "Karachi, Pakistan", offset: -4 },
-    { id: "3", name: "London, UK", offset: +5 },
-    { id: "4", name: "Tokyo, Japan", offset: -9 },
-    { id: "5", name: "Tokyo, Japan", offset: +7 },
-  ]);
+  const userTimezone = useUserTimezone();
+  const [globalTime, setGlobalTime] = useTimezoneClock();
+  const [timezones, setTimezones] = React.useState<
+    { id: string; name: string; offset: number }[]
+  >([]);
+
+  React.useEffect(() => {
+    if (userTimezone && timezones.length === 0) {
+      setTimezones([userTimezone]);
+    }
+  }, [userTimezone]);
 
   const sensors = useSensors(useSensor(PointerSensor));
 
   const handleDragEnd = (event: any) => {
     const { active, over } = event;
-    if (active.id !== over.id) {
-      setTimezones((items) => {
-        const oldIndex = items.findIndex((item) => item.id === active.id);
-        const newIndex = items.findIndex((item) => item.id === over.id);
-        return arrayMove(items, oldIndex, newIndex);
-      });
-    }
+    if (!over || active.id === over.id) return;
+    setTimezones((items) => {
+      const oldIndex = items.findIndex((item) => item.id === active.id);
+      const newIndex = items.findIndex((item) => item.id === over.id);
+      return arrayMove(items, oldIndex, newIndex);
+    });
+  };
+
+  const handleAddTimezone = (tz: {
+    id: string;
+    name: string;
+    offset: number;
+  }) => {
+    setTimezones((prev) => [...prev, tz]);
   };
 
   return (
@@ -69,7 +81,6 @@ const page = () => {
                   overscroll-contain 
                   grid-cols-[repeat(auto-fill,minmax(300px,1fr))] 
                   justify-items-center
-          
                   "
             >
               {timezones.map((tz) => (
@@ -82,7 +93,7 @@ const page = () => {
                   onGlobalTimeChange={setGlobalTime}
                 />
               ))}
-              <TAddNewTimezoneCard />
+              <TAddNewTimezoneCard onAddTimezone={handleAddTimezone} />
             </div>
           </SortableContext>
         </DndContext>
@@ -136,7 +147,11 @@ const page = () => {
                 className="bg-zinc-900 border border-zinc-800 max-w-lg"
               >
                 <DialogTitle hidden></DialogTitle>
-                <TAddNewTimezoneCard defaultSearchMode={true} />
+
+                <TAddNewTimezoneCard
+                  onAddTimezone={(tz) => setTimezones((prev) => [...prev, tz])}
+                  defaultSearchMode={true}
+                />
               </DialogContent>
             </Dialog>
 
@@ -194,7 +209,7 @@ function SortableTimezoneCard({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id });
+  } = require("@dnd-kit/sortable").useSortable({ id });
 
   const style = {
     transform: CSS.Transform.toString(transform),

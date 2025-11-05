@@ -1,9 +1,9 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { Code2 } from "lucide-react";
 
 type Props = {
-  value?: number;
+  value?: any;
   onChange?: (hours: number) => void;
   duration?: number;
   totalBars?: number;
@@ -17,14 +17,13 @@ export default function AudioWaveform({
 }: Props) {
   const [currentTime, setCurrentTime] = useState<number>(value ?? 0);
   const [isDragging, setIsDragging] = useState(false);
-
   const timelineRef = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
-    // Only update if value actually changed and user isn't dragging
     if (typeof value === "number" && !isDragging && value !== currentTime) {
       setCurrentTime(value);
     }
-  }, [value, isDragging, currentTime]);
+  }, [value, isDragging]);
 
   const barHeights = React.useMemo(() => {
     return Array.from({ length: totalBars }, (_, i) => {
@@ -65,6 +64,7 @@ export default function AudioWaveform({
     const onMouseUp = () => {
       if (!isDragging) return;
       setIsDragging(false);
+      if (onChange) onChange(currentTime);
     };
     window.addEventListener("mousemove", onMouseMove);
     window.addEventListener("mouseup", onMouseUp);
@@ -83,9 +83,11 @@ export default function AudioWaveform({
       setCurrentTime(newTime);
       if (onChange) onChange(newTime);
     };
+
     const onTouchEnd = () => {
       if (!isDragging) return;
       setIsDragging(false);
+      if (onChange) onChange(currentTime);
     };
     window.addEventListener("touchmove", onTouchMove, { passive: false });
     window.addEventListener("touchend", onTouchEnd);

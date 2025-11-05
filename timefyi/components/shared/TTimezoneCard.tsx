@@ -23,7 +23,6 @@ const TTimezoneCard = ({
   onGlobalTimeChange,
   listeners,
   attributes,
-  initialTimeHours = 2.55,
 }: any) => {
   const [isActive, setIsActive] = React.useState(false);
   const [selectedDate, setSelectedDate] = React.useState<Date | undefined>(
@@ -39,7 +38,7 @@ const TTimezoneCard = ({
       {...attributes}
       onClick={() => setIsActive(!isActive)}
       className={`draggable w-full relative flex select-none flex-col bg-zinc-900 max-h-[220px] justify-between overflow-hidden rounded-2xl border p-4 text-white transition-colors sm:rounded-xl sm:p-5 cursor-pointer
-        ${isActive ? "border-yellow-400 " : "border-zinc-800 "}`}
+              ${isActive ? "border-yellow-400 " : "border-zinc-800 "}`}
     >
       <div
         title="Central European Standard Time"
@@ -73,13 +72,10 @@ const TTimezoneCard = ({
               {meridiem}
             </span>
           </p>
-          <span className="rounded-full bg-neutral-800 px-2 py-1.5 text-sm lg:text-xs xl:text-sm text-red-500">
-            {offset >= 0 ? `+${offset}h` : `${offset}h`}
-          </span>
         </div>
       </div>
       <div className="flex gap-1.5 text-sm text-neutral-500">
-        <p>GMT+1</p>.
+        <p>GMT {offset >= 0 ? `+${offset}h` : `${offset}h`}</p>.
         <div
           onPointerDown={(e) => e.stopPropagation()}
           onClick={(e) => e.stopPropagation()}
