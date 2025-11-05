@@ -66,7 +66,7 @@ const TTimezoneCard = ({
         <div className="flex items-center gap-2 sm:gap-3">
           <p className="font-mono text-3xl ">
             <span>{label.split(":")[0]}</span>
-            <span className="mx-0.5 font-serif">:</span>
+            <span className="mx-0.5 font-serif blink-colon">:</span>
             <span>{label.split(":")[1]}</span>
             <span className="ml-2 font-sans font-medium text-neutral-600">
               {meridiem}
