@@ -34,7 +34,9 @@ import { CSS } from "@dnd-kit/utilities";
 const page = () => {
   const { view } = useTimezoneView();
   const userTimezone = useUserTimezone();
-  const [globalTime, setGlobalTime] = useTimezoneClock();
+  const [globalTime, setGlobalTime, isRunning, setIsRunning] =
+    useTimezoneClock();
+
   const [timezones, setTimezones] = React.useState<
     { id: string; name: string; offset: number }[]
   >([]);
@@ -65,6 +67,21 @@ const page = () => {
     setTimezones((prev) => [...prev, tz]);
   };
 
+  const handleResetTimezone = (id: string) => {
+    setTimezones((prev) =>
+      prev.map((tz) =>
+        tz.id === id && userTimezone
+          ? { ...tz, offset: userTimezone.offset }
+          : tz
+      )
+    );
+  };
+
+  // ✅ Delete timezone card
+  const handleDeleteTimezone = (id: string) => {
+    setTimezones((prev) => prev.filter((tz) => tz.id !== id));
+  };
+
   return (
     <div className="h-full">
       {view === "layout1" ? (
@@ -91,6 +108,10 @@ const page = () => {
                   offset={tz.offset}
                   globalTime={globalTime}
                   onGlobalTimeChange={setGlobalTime}
+                  onReset={handleResetTimezone}
+                  onDelete={handleDeleteTimezone}
+                  isClockRunning={isRunning}
+                  setIsClockRunning={setIsRunning}
                 />
               ))}
               <TAddNewTimezoneCard onAddTimezone={handleAddTimezone} />
@@ -195,12 +216,20 @@ function SortableTimezoneCard({
   offset,
   globalTime,
   onGlobalTimeChange,
+  onReset,
+  onDelete,
+  isClockRunning,
+  setIsClockRunning,
 }: {
   id: string;
   name: string;
   offset: any;
   globalTime: any;
   onGlobalTimeChange: any;
+  onReset: (id: string) => void;
+  onDelete: (id: string) => void;
+  isClockRunning: any;
+  setIsClockRunning: any;
 }) {
   const {
     attributes,
@@ -226,6 +255,10 @@ function SortableTimezoneCard({
         offset={offset}
         globalTime={globalTime}
         onGlobalTimeChange={onGlobalTimeChange}
+        onReset={onReset}
+        onDelete={onDelete}
+        isClockRunning={isClockRunning}
+        setIsClockRunning={setIsClockRunning}
       />
     </div>
   );

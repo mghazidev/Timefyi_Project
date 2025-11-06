@@ -17,20 +17,50 @@ function formatHoursToLabel(hours: number) {
 }
 
 const TTimezoneCard = ({
+  id,
   name,
   offset,
   globalTime,
   onGlobalTimeChange,
   listeners,
   attributes,
+  onReset,
+  onDelete,
+  isClockRunning,
+  setIsClockRunning,
 }: any) => {
   const [isActive, setIsActive] = React.useState(false);
   const [selectedDate, setSelectedDate] = React.useState<Date | undefined>(
     new Date()
   );
-
+  const [isEditedTime, setIsEditedTime] = React.useState(false);
   const localTime = (globalTime + offset + 24) % 24;
   const { label, meridiem } = formatHoursToLabel(localTime);
+
+  const handleWaveformChange = (newLocalTime: number) => {
+    // stop automatic ticking while editing
+    setIsClockRunning(false);
+
+    const adjustedGlobalTime = (newLocalTime - offset + 24) % 24;
+    onGlobalTimeChange(adjustedGlobalTime);
+    setIsEditedTime(true);
+  };
+
+  const handleReset = () => {
+    onReset(id);
+    setIsEditedTime(false);
+
+    const now = new Date();
+    const currentUTC =
+      now.getUTCHours() + now.getUTCMinutes() / 60 + now.getUTCSeconds() / 3600;
+    onGlobalTimeChange(currentUTC);
+
+    setIsClockRunning(true);
+  };
+
+  const handleDeleteClick = () => {
+    onDelete(id);
+  };
 
   return (
     <div
@@ -51,13 +81,22 @@ const TTimezoneCard = ({
           onPointerDown={(e) => e.stopPropagation()}
           onClick={(e) => e.stopPropagation()}
         >
-          <button className="cursor-pointer text-red-400 hover:text-zinc-200">
-            <RotateIcon size={18} />
-          </button>
+          {isEditedTime && (
+            <button
+              className="cursor-pointer text-red-400 hover:text-zinc-200"
+              onClick={handleReset}
+            >
+              <RotateIcon size={18} />
+            </button>
+          )}
           <button className="cursor-pointer text-zinc-500 hover:text-zinc-200">
             <EditIcon size={18} />
           </button>
-          <button className="cursor-pointer text-zinc-500 hover:text-zinc-200">
+          {/* Delete */}
+          <button
+            className="cursor-pointer text-zinc-500 hover:text-zinc-200"
+            onClick={handleDeleteClick}
+          >
             <TrashIcon size={18} />
           </button>
         </div>
@@ -66,7 +105,13 @@ const TTimezoneCard = ({
         <div className="flex items-center gap-2 sm:gap-3">
           <p className="font-mono text-3xl ">
             <span>{label.split(":")[0]}</span>
-            <span className="mx-0.5 font-serif blink-colon">:</span>
+            <span
+              className={`mx-0.5 font-serif transition-opacity duration-200 ${
+                isClockRunning ? "blink-colon" : "opacity-60"
+              }`}
+            >
+              :
+            </span>
             <span>{label.split(":")[1]}</span>
             <span className="ml-2 font-sans font-medium text-neutral-600">
               {meridiem}
@@ -87,13 +132,7 @@ const TTimezoneCard = ({
         onPointerDown={(e) => e.stopPropagation()}
         onClick={(e) => e.stopPropagation()}
       >
-        <AudioWaveform
-          value={localTime}
-          onChange={(newLocalTime) => {
-            const adjustedGlobalTime = (newLocalTime - offset + 24) % 24;
-            onGlobalTimeChange(adjustedGlobalTime);
-          }}
-        />
+        <AudioWaveform value={localTime} onChange={handleWaveformChange} />
       </div>
     </div>
   );
