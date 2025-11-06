@@ -249,6 +249,7 @@ function SortableTimezoneCard({
   return (
     <div className="w-full" ref={setNodeRef} style={style}>
       <TTimezoneCard
+        id={id}
         name={name}
         listeners={listeners}
         attributes={attributes}
