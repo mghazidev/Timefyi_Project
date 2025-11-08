@@ -15,7 +15,7 @@ export function TimezoneViewProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [view, setView] = useState<"layout1" | "layout2">("layout2"); // default
+  const [view, setView] = useState<"layout1" | "layout2">("layout1"); // default
 
   const toggleView = () => {
     setView((prev) => (prev === "layout1" ? "layout2" : "layout1"));

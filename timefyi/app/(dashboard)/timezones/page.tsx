@@ -67,17 +67,6 @@ const page = () => {
     setTimezones((prev) => [...prev, tz]);
   };
 
-  const handleResetTimezone = (id: string) => {
-    setTimezones((prev) =>
-      prev.map((tz) =>
-        tz.id === id && userTimezone
-          ? { ...tz, offset: userTimezone.offset }
-          : tz
-      )
-    );
-  };
-
-  // ✅ Delete timezone card
   const handleDeleteTimezone = (id: string) => {
     setTimezones((prev) => prev.filter((tz) => tz.id !== id));
   };
@@ -108,7 +97,6 @@ const page = () => {
                   offset={tz.offset}
                   globalTime={globalTime}
                   onGlobalTimeChange={setGlobalTime}
-                  onReset={handleResetTimezone}
                   onDelete={handleDeleteTimezone}
                   isClockRunning={isRunning}
                   setIsClockRunning={setIsRunning}
@@ -216,7 +204,6 @@ function SortableTimezoneCard({
   offset,
   globalTime,
   onGlobalTimeChange,
-  onReset,
   onDelete,
   isClockRunning,
   setIsClockRunning,
@@ -226,7 +213,6 @@ function SortableTimezoneCard({
   offset: any;
   globalTime: any;
   onGlobalTimeChange: any;
-  onReset: (id: string) => void;
   onDelete: (id: string) => void;
   isClockRunning: any;
   setIsClockRunning: any;
@@ -256,7 +242,6 @@ function SortableTimezoneCard({
         offset={offset}
         globalTime={globalTime}
         onGlobalTimeChange={onGlobalTimeChange}
-        onReset={onReset}
         onDelete={onDelete}
         isClockRunning={isClockRunning}
         setIsClockRunning={setIsClockRunning}

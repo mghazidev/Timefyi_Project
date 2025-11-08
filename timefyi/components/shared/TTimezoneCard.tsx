@@ -24,7 +24,6 @@ const TTimezoneCard = ({
   onGlobalTimeChange,
   listeners,
   attributes,
-  onReset,
   onDelete,
   isClockRunning,
   setIsClockRunning,
@@ -47,7 +46,6 @@ const TTimezoneCard = ({
   };
 
   const handleReset = () => {
-    onReset(id);
     setIsEditedTime(false);
 
     const now = new Date();
