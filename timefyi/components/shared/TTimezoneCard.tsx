@@ -65,7 +65,7 @@ const TTimezoneCard = ({
       {...listeners}
       {...attributes}
       onClick={() => setIsActive(!isActive)}
-      className={`draggable w-full relative flex select-none flex-col bg-zinc-900 max-h-[220px] justify-between overflow-hidden rounded-2xl border p-4 text-white transition-colors sm:rounded-xl sm:p-5 cursor-pointer
+      className={`draggable w-full relative flex  select-none flex-col bg-zinc-900 max-h-[220px] justify-between overflow-hidden rounded-2xl border p-4 text-white transition-colors sm:rounded-xl sm:p-5 cursor-pointer
               ${isActive ? "border-yellow-400 " : "border-zinc-800 "}`}
     >
       <div

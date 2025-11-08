@@ -62,21 +62,23 @@ const TSidebar = () => {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-2 px-4 py-1 transition-all duration-200   ${
+                className={`flex items-center gap-2 px-4 py-1 transition-all duration-200 z-10   ${
                   isActive
                     ? "text-yellow-300"
                     : " text-zinc-700 hover:text-zinc-300"
                 }`}
               >
-                <div className="flex justify-center">{item.icon}</div>
-                {!isCollapsed && (
-                  <span className="whitespace-nowrap text-sm font-medium">
-                    {item.label}
-                  </span>
-                )}
+                <div className="relative group flex justify-center">
+                  {item.icon}
+                  {isCollapsed && (
+                    <span className="absolute z-10 left-full ml-2 bg-zinc-500 text-xs font-medium text-zinc-800 px-2 py-1 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap transition-opacity duration-200 pointer-events-none">
+                      {item.label}
+                    </span>
+                  )}
+                </div>
 
-                {isCollapsed && (
-                  <span className="absolute left-full ml-2 bg-zinc-500 text-xs font-medium text-zinc-800 px-2 py-1 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap transition-opacity duration-200 z-10">
+                {!isCollapsed && (
+                  <span className="whitespace-nowrap text-sm font-medium z-10">
                     {item.label}
                   </span>
                 )}
