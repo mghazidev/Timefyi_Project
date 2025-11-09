@@ -7,7 +7,7 @@ import GlobeIcon from "../icons/GlobeIcon";
 import { DateTime } from "luxon";
 import { timezoneData, TimezoneData } from "@/lib/timezoneData";
 import Fuse from "fuse.js";
-
+import Input from "../ui/input";
 type TAddNewTimezoneCardProps = {
   onAddTimezone: (tz: { id: string; name: string; offset: number }) => void;
   defaultSearchMode?: boolean;
@@ -76,7 +76,7 @@ const TAddNewTimezoneCard: React.FC<TAddNewTimezoneCardProps> = ({
             <GlobeIcon size={18} className="text-zinc-500" />
 
             <div className="flex-1 mx-2">
-              <div className="relative">
+              {/* <div className="relative">
                 <input
                   type="text"
                   value={query}
@@ -85,7 +85,14 @@ const TAddNewTimezoneCard: React.FC<TAddNewTimezoneCardProps> = ({
                   className="w-full text-base text-zinc-200 outline-none placeholder-zinc-500 bg-transparent"
                   autoFocus
                 />
-              </div>
+              </div> */}
+              <Input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Timezone, city, or country"
+                autoFocus
+              />
             </div>
 
             <div
