@@ -22,6 +22,8 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         yellow:
           "bg-yellow-500 text-zinc-900 hover:bg-yellow-400 cursor-pointer ",
+        dotted:
+          "border border-dashed border-zinc-700 text-sm text-zinc-500 font-normal bg-transparent w-full hover:text-zinc-300 cursor-pointer hover:border-zinc-300",
         danger:
           "bg-transparent border-2 border-red-400 cursor-pointer hover:bg-red-300 hover:border-red-300 hover:text-zinc-900 text-red-400 rounded-2xl",
       },
