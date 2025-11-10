@@ -10,14 +10,31 @@ import {
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 
-export default function TCalendar({ className }: any) {
-  const [date, setDate] = React.useState<Date | undefined>(new Date());
-  const [month, setMonth] = React.useState(
-    date?.getMonth() ?? new Date().getMonth()
+interface TCalendarProps {
+  className?: string;
+  value?: string;
+  onChange?: (date: string) => void;
+}
+
+export default function TCalendar({
+  className,
+  value,
+  onChange,
+}: TCalendarProps) {
+  const [date, setDate] = React.useState<Date>(
+    value ? new Date(value) : new Date()
   );
-  const [year, setYear] = React.useState(
-    date?.getFullYear() ?? new Date().getFullYear()
-  );
+  const [month, setMonth] = React.useState(date.getMonth());
+  const [year, setYear] = React.useState(date.getFullYear());
+
+  React.useEffect(() => {
+    if (value) {
+      const newDate = new Date(value);
+      setDate(newDate);
+      setMonth(newDate.getMonth());
+      setYear(newDate.getFullYear());
+    }
+  }, [value]);
 
   const daysOfWeek = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
@@ -46,6 +63,12 @@ export default function TCalendar({ className }: any) {
     const newDate = new Date(year, newMonth, 1);
     setMonth(newDate.getMonth());
     setYear(newDate.getFullYear());
+  };
+
+  const handleSelectDate = (day: number) => {
+    const newDate = new Date(year, month, day);
+    setDate(newDate);
+    onChange?.(newDate.toISOString().split("T")[0]);
   };
 
   return (
@@ -99,7 +122,7 @@ export default function TCalendar({ className }: any) {
           {days.map((d, i) => (
             <button
               key={i}
-              onClick={() => d.current && setDate(new Date(year, month, d.day))}
+              onClick={() => d.current && handleSelectDate(d.day)}
               className={cn(
                 "w-8 h-8 flex items-center justify-center rounded-md transition-colors",
                 d.current ? "text-zinc-300 hover:bg-zinc-800" : "text-zinc-600",

@@ -12,6 +12,8 @@ interface TTaskRowProps {
   label: string;
   isPlaying: boolean;
   onPlay: (id: string) => void;
+  onToggleComplete?: (id: string) => void;
+  completed?: boolean;
 }
 
 const TTaskRow: React.FC<TTaskRowProps> = ({
@@ -19,20 +21,27 @@ const TTaskRow: React.FC<TTaskRowProps> = ({
   label,
   isPlaying,
   onPlay,
+  onToggleComplete,
+  completed = false,
 }) => {
   return (
     <div
-      className={`group relative flex items-center justify-between cursor-pointer w-full gap-3 px-3 py-1 rounded-md text-zinc-500 hover:text-zinc-300
+      className={`group relative flex items-center justify-between cursor-pointer w-full gap-3 p-2 text-zinc-500 hover:text-zinc-300
         ${isPlaying ? "bg-animated-stripes" : "hover:bg-zinc-800"}`}
     >
       <div className="flex items-center justify-start gap-3 z-10">
-        <Checkbox id={id} className="size-4" />
+        <Checkbox
+          id={id}
+          className="size-4"
+          checked={completed}
+          onCheckedChange={() => onToggleComplete?.(id)}
+        />
         <Label htmlFor={id} className="text-sm">
           {label}
         </Label>
       </div>
 
-      <div className="opacity-0 group-hover:opacity-100 p-2 rounded-md flex items-center gap-2 text-zinc-600 z-10">
+      <div className="opacity-0 group-hover:opacity-100 rounded-md flex items-center gap-2 text-zinc-600 z-10">
         <button
           className="hover:text-zinc-200 cursor-pointer"
           onClick={(e) => {

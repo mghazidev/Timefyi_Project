@@ -17,39 +17,44 @@ const Page = () => {
     "pending"
   );
   const [playingTaskId, setPlayingTaskId] = React.useState<string | null>(null);
-
-  // ✅ New States
-  const [showSection2, setShowSection2] = React.useState(true); // "No task" section
-  const [showSection3, setShowSection3] = React.useState(false); // Add task input section
-  const [showSection4, setShowSection4] = React.useState(false); // "Add new task" button
-  const [showSection5, setShowSection5] = React.useState(false); // Task list
-  const [tasks, setTasks] = React.useState<string[]>([]); // Store added tasks
+  const [showSection2, setShowSection2] = React.useState(true);
+  const [showSection3, setShowSection3] = React.useState(false);
+  const [showSection4, setShowSection4] = React.useState(false);
+  const [showSection5, setShowSection5] = React.useState(false);
+  const [tasks, setTasks] = React.useState<
+    { id: string; label: string; date: string; completed: boolean }[]
+  >([]);
   const [newTask, setNewTask] = React.useState("");
+  const [selectedDate, setSelectedDate] = React.useState(
+    new Date().toISOString().split("T")[0]
+  );
 
   const handleSelect = (value: "pending" | "completed") => {
     if (selected !== value) setSelected(value);
   };
 
-  // When user clicks "Add a new task" from Section 2
   const handleStartAdding = () => {
     setShowSection2(false);
     setShowSection3(true);
   };
 
-  // When user clicks "Save"
   const handleSaveTask = () => {
     if (newTask.trim() === "") return;
-    setTasks((prev) => [...prev, newTask.trim()]);
+    const newTaskObj = {
+      id: `task-${Date.now()}`,
+      label: newTask.trim(),
+      date: selectedDate,
+      completed: false,
+    };
+    setTasks((prev) => [...prev, newTaskObj]);
     setNewTask("");
     setShowSection3(false);
     setShowSection4(true);
     setShowSection5(true);
   };
 
-  // When user clicks "Cancel"
   const handleCancel = () => {
     setNewTask("");
-    // If no task was added yet, show the empty state again
     if (tasks.length === 0) {
       setShowSection3(false);
       setShowSection2(true);
@@ -59,15 +64,32 @@ const Page = () => {
     }
   };
 
-  // When user clicks "Add new task" button (Section 4)
   const handleAddNewClick = () => {
     setShowSection3(true);
     setShowSection4(false);
   };
 
+  const handlePrevDate = () => {
+    const prev = new Date(selectedDate);
+    prev.setDate(prev.getDate() - 1);
+    setSelectedDate(prev.toISOString().split("T")[0]);
+  };
+
+  const handleNextDate = () => {
+    const next = new Date(selectedDate);
+    next.setDate(next.getDate() + 1);
+    setSelectedDate(next.toISOString().split("T")[0]);
+  };
+
+  const filteredTasks = tasks.filter(
+    (task) =>
+      task.date === selectedDate &&
+      (selected === "pending" ? !task.completed : task.completed)
+  );
+
   return (
     <div className="h-[100%] w-full grid gap-3 grid-cols-[1.2fr_3fr]">
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900 transition-all lg:flex-grow lg:p-2">
+      <div className="rounded-xl border border-zinc-800 bg-zinc-900 transition-all lg:flex-grow lg:p-0">
         {/* ---------------- Section 1 ---------------- */}
         <div className="flex justify-between gap-3 p-2 ">
           <div className="flex justify-start gap-1">
@@ -103,25 +125,35 @@ const Page = () => {
             </div>
           </div>
           <div className="flex justify-end items-center gap-1">
-            <TCalendar />
+            <TCalendar
+              value={selectedDate}
+              onChange={(date: string) => setSelectedDate(date)}
+            />
+
             <div className="flex items-center gap-1 text-zinc-500">
-              <div className="hover:bg-zinc-800 p-1 rounded">
+              <button
+                className="hover:bg-zinc-800 p-1 rounded"
+                onClick={handlePrevDate}
+              >
                 <ChevronLeft size={16} />
-              </div>
-              <div className="hover:bg-zinc-800 p-1 rounded">
+              </button>
+              <button
+                className="hover:bg-zinc-800 p-1 rounded"
+                onClick={handleNextDate}
+              >
                 <ChevronRight size={16} />
-              </div>
+              </button>
             </div>
           </div>
         </div>
         {/* ---------------- End of Section 1 ---------------- */}
 
         {/* ---------------- Section 2 ---------------- */}
-        {showSection2 && (
+        {showSection2 && filteredTasks.length === 0 && (
           <div className="relative flex-grow h-[calc(100%-60px)] ">
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-sm text-zinc-600">
               <TaskIcon size={48} className="text-zinc-800" />
-              <p>No tasks for this day</p>
+              <p>No {selected} tasks for this day</p>
               <button
                 onClick={handleStartAdding}
                 className="text-zinc-500 underline underline-offset-2 hover:text-zinc-300 cursor-pointer"
@@ -135,22 +167,31 @@ const Page = () => {
 
         {/* ---------------- Section 5 ---------------- */}
         {showSection5 &&
-          tasks.map((task, index) => (
+          filteredTasks.map((task) => (
             <TTaskRow
-              key={index}
-              id={`task-${index}`}
-              label={task}
-              isPlaying={playingTaskId === `task-${index}`}
+              key={task.id}
+              id={task.id}
+              label={task.label}
+              isPlaying={playingTaskId === task.id}
+              completed={task.completed}
               onPlay={(id) =>
                 setPlayingTaskId((prev) => (prev === id ? null : id))
               }
+              onToggleComplete={(id) =>
+                setTasks((prev) =>
+                  prev.map((t) =>
+                    t.id === id ? { ...t, completed: !t.completed } : t
+                  )
+                )
+              }
             />
           ))}
+
         {/* ---------------- End of Section 5 ---------------- */}
 
         {/* ---------------- Section 3 ---------------- */}
         {showSection3 && (
-          <div className="flex flex-col items-start gap-3 p-3 border border-zinc-700 rounded-md my-2">
+          <div className="flex flex-col items-start gap-3 p-3 m-2 border border-zinc-700 rounded-md my-2">
             <Input
               placeholder="Type and press enter to save or esc to cancel"
               value={newTask}
@@ -181,7 +222,10 @@ const Page = () => {
                   <span>Cancel</span>
                 </button>
               </div>
-              <TCalendar />
+              <TCalendar
+                value={selectedDate}
+                onChange={(date: string) => setSelectedDate(date)}
+              />
             </div>
           </div>
         )}
@@ -189,7 +233,7 @@ const Page = () => {
 
         {/* ---------------- Section 4 ---------------- */}
         {showSection4 && (
-          <div>
+          <div className="m-2">
             <Button variant={"dotted"} onClick={handleAddNewClick}>
               <PlusIcon size={18} />
               Add new Task
@@ -206,3 +250,10 @@ const Page = () => {
 };
 
 export default Page;
+
+// {
+//   id: string;
+//   label: string;
+//   date: string; // 'YYYY-MM-DD' format
+//   completed: boolean;
+// }
