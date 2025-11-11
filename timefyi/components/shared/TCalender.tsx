@@ -68,7 +68,12 @@ export default function TCalendar({
   const handleSelectDate = (day: number) => {
     const newDate = new Date(year, month, day);
     setDate(newDate);
-    onChange?.(newDate.toISOString().split("T")[0]);
+    const localDate = new Date(
+      newDate.getTime() - newDate.getTimezoneOffset() * 60000
+    )
+      .toISOString()
+      .split("T")[0];
+    onChange?.(localDate);
   };
 
   return (

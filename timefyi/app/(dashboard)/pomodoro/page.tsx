@@ -9,7 +9,7 @@ import Input from "@/components/ui/input";
 import BackArrowIcon from "@/components/icons/BackArrowIcon";
 import { Button } from "@/components/ui/button";
 import PlusIcon from "@/components/icons/PlusIcon";
-
+import getLocalDateString from "@/lib/helpers";
 import TTaskRow from "@/components/shared/TTaskRow";
 
 const Page = () => {
@@ -25,9 +25,8 @@ const Page = () => {
     { id: string; label: string; date: string; completed: boolean }[]
   >([]);
   const [newTask, setNewTask] = React.useState("");
-  const [selectedDate, setSelectedDate] = React.useState(
-    new Date().toISOString().split("T")[0]
-  );
+  const [selectedDate, setSelectedDate] = React.useState(getLocalDateString());
+  const [newTaskDate, setNewTaskDate] = React.useState(getLocalDateString());
 
   const handleSelect = (value: "pending" | "completed") => {
     if (selected !== value) setSelected(value);
@@ -43,7 +42,7 @@ const Page = () => {
     const newTaskObj = {
       id: `task-${Date.now()}`,
       label: newTask.trim(),
-      date: selectedDate,
+      date: newTaskDate,
       completed: false,
     };
     setTasks((prev) => [...prev, newTaskObj]);
@@ -72,18 +71,19 @@ const Page = () => {
   const handleAddNewClick = () => {
     setShowSection3(true);
     setShowSection4(false);
+    setNewTaskDate(selectedDate);
   };
 
   const handlePrevDate = () => {
     const prev = new Date(selectedDate);
     prev.setDate(prev.getDate() - 1);
-    setSelectedDate(prev.toISOString().split("T")[0]);
+    setSelectedDate(getLocalDateString(prev));
   };
 
   const handleNextDate = () => {
     const next = new Date(selectedDate);
     next.setDate(next.getDate() + 1);
-    setSelectedDate(next.toISOString().split("T")[0]);
+    setSelectedDate(getLocalDateString(next));
   };
 
   const filteredTasks = tasks.filter(
@@ -245,8 +245,8 @@ const Page = () => {
                 </button>
               </div>
               <TCalendar
-                value={selectedDate}
-                onChange={(date: string) => setSelectedDate(date)}
+                value={newTaskDate}
+                onChange={(date) => setNewTaskDate(date)}
               />
             </div>
           </div>
