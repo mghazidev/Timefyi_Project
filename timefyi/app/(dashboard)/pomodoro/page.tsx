@@ -49,15 +49,20 @@ const Page = () => {
     setTasks((prev) => [...prev, newTaskObj]);
     setNewTask("");
     setShowSection3(false);
+    setShowSection2(false);
     setShowSection4(true);
     setShowSection5(true);
   };
 
   const handleCancel = () => {
     setNewTask("");
-    if (tasks.length === 0) {
+    const hasPendingTasks = tasks.some(
+      (t) => t.date === selectedDate && !t.completed
+    );
+    if (!hasPendingTasks) {
       setShowSection3(false);
       setShowSection2(true);
+      setShowSection4(false);
     } else {
       setShowSection3(false);
       setShowSection4(true);
@@ -86,6 +91,21 @@ const Page = () => {
       task.date === selectedDate &&
       (selected === "pending" ? !task.completed : task.completed)
   );
+
+  React.useEffect(() => {
+    if (selected === "pending") {
+      if (filteredTasks.length === 0) {
+        setShowSection2(true);
+        setShowSection4(false);
+      } else {
+        setShowSection2(false);
+        setShowSection4(true);
+      }
+    } else {
+      setShowSection2(filteredTasks.length === 0);
+      setShowSection4(false);
+    }
+  }, [selected, filteredTasks.length]);
 
   return (
     <div className="h-[100%] w-full grid gap-3 grid-cols-[1.2fr_3fr]">
@@ -149,20 +169,22 @@ const Page = () => {
         {/* ---------------- End of Section 1 ---------------- */}
 
         {/* ---------------- Section 2 ---------------- */}
-        {showSection2 && filteredTasks.length === 0 && (
-          <div className="relative flex-grow h-[calc(100%-60px)] ">
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-sm text-zinc-600">
-              <TaskIcon size={48} className="text-zinc-800" />
-              <p>No {selected} tasks for this day</p>
-              <button
-                onClick={handleStartAdding}
-                className="text-zinc-500 underline underline-offset-2 hover:text-zinc-300 cursor-pointer"
-              >
-                Add a new task
-              </button>
+        {showSection2 &&
+          filteredTasks.length === 0 &&
+          selected === "pending" && (
+            <div className="relative flex-grow h-[calc(100%-60px)] ">
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-sm text-zinc-600">
+                <TaskIcon size={48} className="text-zinc-800" />
+                <p>No {selected} tasks for this day</p>
+                <button
+                  onClick={handleStartAdding}
+                  className="text-zinc-500 underline underline-offset-2 hover:text-zinc-300 cursor-pointer"
+                >
+                  Add a new task
+                </button>
+              </div>
             </div>
-          </div>
-        )}
+          )}
         {/* ---------------- End of Section 2 ---------------- */}
 
         {/* ---------------- Section 5 ---------------- */}
@@ -232,7 +254,7 @@ const Page = () => {
         {/* ---------------- End of Section 3 ---------------- */}
 
         {/* ---------------- Section 4 ---------------- */}
-        {showSection4 && (
+        {showSection4 && selected === "pending" && filteredTasks.length > 0 && (
           <div className="m-2">
             <Button variant={"dotted"} onClick={handleAddNewClick}>
               <PlusIcon size={18} />
