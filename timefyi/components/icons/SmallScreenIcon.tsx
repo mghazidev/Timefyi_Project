@@ -1,6 +1,6 @@
 import React from "react";
 import { IconBaseProps } from "../types";
-const PlayIcon: React.FC<IconBaseProps> = ({ size = 48, className }) => {
+const SmallScreenIcon: React.FC<IconBaseProps> = ({ size = 48, className }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -14,9 +14,12 @@ const PlayIcon: React.FC<IconBaseProps> = ({ size = 48, className }) => {
       strokeLinejoin="round"
       className={className}
     >
-      <polygon points="6 3 20 12 6 21 6 3"></polygon>
+      <path d="M8 3v3a2 2 0 0 1-2 2H3"></path>
+      <path d="M21 8h-3a2 2 0 0 1-2-2V3"></path>
+      <path d="M3 16h3a2 2 0 0 1 2 2v3"></path>
+      <path d="M16 21v-3a2 2 0 0 1 2-2h3"></path>
     </svg>
   );
 };
 
-export default PlayIcon;
+export default SmallScreenIcon;

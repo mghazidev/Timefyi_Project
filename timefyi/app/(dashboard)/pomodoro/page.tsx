@@ -11,6 +11,13 @@ import { Button } from "@/components/ui/button";
 import PlusIcon from "@/components/icons/PlusIcon";
 import getLocalDateString from "@/lib/helpers";
 import TTaskRow from "@/components/shared/TTaskRow";
+import RotateIcon from "@/components/icons/RotateIcon";
+import EditableIcon from "@/components/icons/EditableIcon";
+import PictureModeIcon from "@/components/icons/PictureModeIcon";
+import FullscreenIcon from "@/components/icons/FullscreenIcon";
+import PomodoroRightLayout from "@/components/sections/PomodoroRightLayout";
+
+const today = getLocalDateString();
 
 const Page = () => {
   const [selected, setSelected] = React.useState<"pending" | "completed">(
@@ -27,6 +34,10 @@ const Page = () => {
   const [newTask, setNewTask] = React.useState("");
   const [selectedDate, setSelectedDate] = React.useState(getLocalDateString());
   const [newTaskDate, setNewTaskDate] = React.useState(getLocalDateString());
+
+  const handleGoToToday = () => {
+    setSelectedDate(today);
+  };
 
   const handleSelect = (value: "pending" | "completed") => {
     if (selected !== value) setSelected(value);
@@ -145,6 +156,15 @@ const Page = () => {
             </div>
           </div>
           <div className="flex justify-end items-center gap-1">
+            {selectedDate !== today && (
+              <button
+                onClick={handleGoToToday}
+                className="text-zinc-400 hover:text-zinc-200 cursor-pointer p-1"
+                title="Go back to today"
+              >
+                <RotateIcon size={14} />
+              </button>
+            )}
             <TCalendar
               value={selectedDate}
               onChange={(date: string) => setSelectedDate(date)}
@@ -266,16 +286,9 @@ const Page = () => {
       </div>
 
       {/* Right Side */}
-      <div className="bg-zinc-900 rounded-2xl border border-zinc-800"></div>
+      <PomodoroRightLayout />
     </div>
   );
 };
 
 export default Page;
-
-// {
-//   id: string;
-//   label: string;
-//   date: string; // 'YYYY-MM-DD' format
-//   completed: boolean;
-// }
