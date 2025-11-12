@@ -12,9 +12,6 @@ import PlusIcon from "@/components/icons/PlusIcon";
 import getLocalDateString from "@/lib/helpers";
 import TTaskRow from "@/components/shared/TTaskRow";
 import RotateIcon from "@/components/icons/RotateIcon";
-import EditableIcon from "@/components/icons/EditableIcon";
-import PictureModeIcon from "@/components/icons/PictureModeIcon";
-import FullscreenIcon from "@/components/icons/FullscreenIcon";
 import PomodoroRightLayout from "@/components/sections/PomodoroRightLayout";
 
 const today = getLocalDateString();
