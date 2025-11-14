@@ -251,24 +251,20 @@ const Page = () => {
               completed={task.completed}
               onPlay={(id) => {
                 if (activeTaskId === id) {
-                  // stopping the task
                   setIsPomodoroPlaying(false);
                   setActiveTaskId(null);
                 } else {
-                  // starting a new task
                   setActiveTaskId(id);
                   setIsPomodoroPlaying(true);
                 }
               }}
               onToggleComplete={(id) => {
-                // toggle completed
                 setTasks((prev) =>
                   prev.map((t) =>
                     t.id === id ? { ...t, completed: !t.completed } : t
                   )
                 );
 
-                // 🛑 IF current task is playing → stop + reset
                 if (activeTaskId === id) {
                   setIsPomodoroPlaying(false);
                   setActiveTaskId(null);
