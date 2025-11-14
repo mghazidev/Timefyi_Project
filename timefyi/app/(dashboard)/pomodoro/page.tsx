@@ -31,6 +31,8 @@ const Page = () => {
   const [newTask, setNewTask] = React.useState("");
   const [selectedDate, setSelectedDate] = React.useState(getLocalDateString());
   const [newTaskDate, setNewTaskDate] = React.useState(getLocalDateString());
+  const [isPomodoroPlaying, setIsPomodoroPlaying] = React.useState(false);
+  const [activeTaskId, setActiveTaskId] = React.useState<string | null>(null);
 
   const handleGoToToday = () => {
     setSelectedDate(today);
@@ -205,7 +207,7 @@ const Page = () => {
         {/* ---------------- End of Section 2 ---------------- */}
 
         {/* ---------------- Section 5 ---------------- */}
-        {showSection5 &&
+        {/* {showSection5 &&
           filteredTasks.map((task) => (
             <TTaskRow
               key={task.id}
@@ -213,16 +215,65 @@ const Page = () => {
               label={task.label}
               isPlaying={playingTaskId === task.id}
               completed={task.completed}
-              onPlay={(id) =>
-                setPlayingTaskId((prev) => (prev === id ? null : id))
-              }
-              onToggleComplete={(id) =>
+              onPlay={(id) => {
+                setPlayingTaskId((prev) => (prev === id ? null : id));
+
+                if (playingTaskId !== id) {
+                  setActiveTaskId(id);
+                  setIsPomodoroPlaying(true);
+                } else {
+                  setIsPomodoroPlaying(false);
+                  setActiveTaskId(null);
+                }
+              }}
+              onToggleComplete={(id) => {
                 setTasks((prev) =>
                   prev.map((t) =>
                     t.id === id ? { ...t, completed: !t.completed } : t
                   )
-                )
-              }
+                );
+
+                if (activeTaskId === id) {
+                  setIsPomodoroPlaying(false);
+                  setActiveTaskId(null);
+                }
+              }}
+            />
+          ))} */}
+        {/* ---------------- Section 5 ---------------- */}
+        {showSection5 &&
+          filteredTasks.map((task) => (
+            <TTaskRow
+              key={task.id}
+              id={task.id}
+              label={task.label}
+              isPlaying={activeTaskId === task.id}
+              completed={task.completed}
+              onPlay={(id) => {
+                if (activeTaskId === id) {
+                  // stopping the task
+                  setIsPomodoroPlaying(false);
+                  setActiveTaskId(null);
+                } else {
+                  // starting a new task
+                  setActiveTaskId(id);
+                  setIsPomodoroPlaying(true);
+                }
+              }}
+              onToggleComplete={(id) => {
+                // toggle completed
+                setTasks((prev) =>
+                  prev.map((t) =>
+                    t.id === id ? { ...t, completed: !t.completed } : t
+                  )
+                );
+
+                // 🛑 IF current task is playing → stop + reset
+                if (activeTaskId === id) {
+                  setIsPomodoroPlaying(false);
+                  setActiveTaskId(null);
+                }
+              }}
             />
           ))}
 
@@ -283,7 +334,15 @@ const Page = () => {
       </div>
 
       {/* Right Side */}
-      <PomodoroRightLayout />
+      <PomodoroRightLayout
+        isPlaying={isPomodoroPlaying}
+        activeTaskId={activeTaskId}
+        onPause={() => setIsPomodoroPlaying(false)}
+        onReset={() => {
+          setIsPomodoroPlaying(false);
+          setActiveTaskId(null);
+        }}
+      />
     </div>
   );
 };
