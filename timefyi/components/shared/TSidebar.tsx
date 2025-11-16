@@ -16,7 +16,7 @@ const sidebarItems = [
   {
     label: "Daily Planner",
     icon: <DailyPlannerIcon size={20} />,
-    href: "/planner",
+    href: "/dailyplanner",
   },
   { label: "World Time", icon: <ClockIcon size={20} />, href: "/worldtime" },
   { label: "Timer", icon: <BellIcon size={20} />, href: "/timer" },
