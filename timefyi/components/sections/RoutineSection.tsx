@@ -1,4 +1,17 @@
+"use client";
+
 import ReverseIcon from "../icons/ReverseIcon";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Label } from "../ui/label";
 
 const RoutineSection = () => {
   return (
@@ -8,9 +21,32 @@ const RoutineSection = () => {
       <p className="mb-4 text-zinc-600">
         Tasks that automatically get added to your daily to-do list
       </p>
-      <button className="text-base text-zinc-500 underline underline-offset-2 hover:text-zinc-300">
-        Add a new Routine
-      </button>
+
+      <Dialog>
+        <DialogTrigger asChild>
+          <button className="text-base text-zinc-500 underline underline-offset-2 hover:text-zinc-300">
+            Add a new Routine
+          </button>
+        </DialogTrigger>
+
+        <DialogContent className="bg-zinc-900 p-3 border-none text-zinc-200">
+          <DialogHeader></DialogHeader>
+
+          <div className="mt-4">
+            <Label>Enter the routine task</Label>
+            <input
+              className="w-full p-2 rounded-md bg-zinc-800 text-zinc-200 outline-none placeholder-zinc-500"
+              placeholder="Routine name..."
+            />
+          </div>
+
+          <DialogFooter className="mt-6">
+            <Button className="bg-yellow-400 text-black hover:bg-yellow-500">
+              Save Routine
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

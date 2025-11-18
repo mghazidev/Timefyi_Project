@@ -23,7 +23,7 @@ const page = () => {
           <button
             onClick={() => setActiveTab("daily")}
             className={`
-              flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-sm font-medium
+              flex items-center gap-1.5 cursor-pointer rounded-lg border px-2.5 py-1.5 text-sm font-medium
               ${
                 activeTab === "daily"
                   ? "border-yellow-400 bg-yellow-400 text-black"
@@ -39,7 +39,7 @@ const page = () => {
           <button
             onClick={() => setActiveTab("routine")}
             className={`
-              flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-sm font-medium
+              flex items-center gap-1.5 cursor-pointer rounded-lg border px-2.5 py-1.5 text-sm font-medium
               ${
                 activeTab === "routine"
                   ? "border-yellow-400 bg-yellow-400 text-black"
@@ -55,7 +55,7 @@ const page = () => {
           <button
             onClick={() => setActiveTab("dump")}
             className={`
-              flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-sm font-medium
+              flex items-center gap-1.5 cursor-pointer rounded-lg border px-2.5 py-1.5 text-sm font-medium
               ${
                 activeTab === "dump"
                   ? "border-yellow-400 bg-yellow-400 text-black"
@@ -70,19 +70,19 @@ const page = () => {
           </button>
         </div>
         <div className="flex">
-          <button className="mr-2 flex items-center justify-between gap-1.5 rounded-md bg-zinc-800 px-3 py-1.5 text-sm text-zinc-400 outline-none hover:bg-zinc-700 hover:text-zinc-200 focus-visible:shadow-[0_0_0_1px] focus-visible:shadow-zinc-900">
+          <button className="mr-2 cursor-pointer flex items-center justify-between gap-1.5 rounded-md bg-zinc-800 px-3 py-1.5 text-sm text-zinc-400 outline-none hover:bg-zinc-700 hover:text-zinc-200 focus-visible:shadow-[0_0_0_1px] focus-visible:shadow-zinc-900">
             Today
           </button>
           <button
-            className="mr-2 flex h-[32px] items-center rounded-md bg-zinc-800 px-3 py-1.5 text-sm text-zinc-400 outline-none hover:bg-zinc-700 hover:text-zinc-200 focus-visible:shadow-[0_0_0_1px] focus-visible:shadow-zinc-900"
+            className="mr-2 flex cursor-pointer h-[32px] items-center rounded-md bg-zinc-800 px-3 py-1.5 text-sm text-zinc-400 outline-none hover:bg-zinc-700 hover:text-zinc-200 focus-visible:shadow-[0_0_0_1px] focus-visible:shadow-zinc-900"
             value="11/16/2025"
           >
             <Calendar size={16} />
           </button>
-          <button className="rounded-md p-1 text-zinc-600 hover:bg-zinc-700 hover:text-zinc-300">
+          <button className="rounded-md cursor-pointer p-1 text-zinc-600 hover:bg-zinc-700 hover:text-zinc-300">
             <ChevronLeft size={18} />
           </button>
-          <button className="rounded-md p-1 text-zinc-600 hover:bg-zinc-700 hover:text-zinc-300">
+          <button className="rounded-md cursor-pointer p-1 text-zinc-600 hover:bg-zinc-700 hover:text-zinc-300">
             <ChevronRight size={18} />
           </button>
         </div>
