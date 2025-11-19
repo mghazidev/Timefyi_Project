@@ -20,7 +20,6 @@ const Page = () => {
   const [selected, setSelected] = React.useState<"pending" | "completed">(
     "pending"
   );
-  const [playingTaskId, setPlayingTaskId] = React.useState<string | null>(null);
   const [showSection2, setShowSection2] = React.useState(true);
   const [showSection3, setShowSection3] = React.useState(false);
   const [showSection4, setShowSection4] = React.useState(false);
@@ -207,40 +206,7 @@ const Page = () => {
         {/* ---------------- End of Section 2 ---------------- */}
 
         {/* ---------------- Section 5 ---------------- */}
-        {/* {showSection5 &&
-          filteredTasks.map((task) => (
-            <TTaskRow
-              key={task.id}
-              id={task.id}
-              label={task.label}
-              isPlaying={playingTaskId === task.id}
-              completed={task.completed}
-              onPlay={(id) => {
-                setPlayingTaskId((prev) => (prev === id ? null : id));
 
-                if (playingTaskId !== id) {
-                  setActiveTaskId(id);
-                  setIsPomodoroPlaying(true);
-                } else {
-                  setIsPomodoroPlaying(false);
-                  setActiveTaskId(null);
-                }
-              }}
-              onToggleComplete={(id) => {
-                setTasks((prev) =>
-                  prev.map((t) =>
-                    t.id === id ? { ...t, completed: !t.completed } : t
-                  )
-                );
-
-                if (activeTaskId === id) {
-                  setIsPomodoroPlaying(false);
-                  setActiveTaskId(null);
-                }
-              }}
-            />
-          ))} */}
-        {/* ---------------- Section 5 ---------------- */}
         {showSection5 &&
           filteredTasks.map((task) => (
             <TTaskRow

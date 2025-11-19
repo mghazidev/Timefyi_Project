@@ -18,7 +18,10 @@ function formatHoursToLabel(hours: number) {
 
 const TTimezoneCard = ({
   id,
-  name,
+  city,
+  country,
+  gmtName,
+  gmtSign,
   offset,
   globalTime,
   onGlobalTimeChange,
@@ -73,7 +76,9 @@ const TTimezoneCard = ({
         className="drag-handle absolute bottom-0 left-0 right-0 top-0 z-[10] bg-transparent"
       ></div>
       <div className="flex items-center justify-between gap-3 ">
-        <p className="truncate text-base text-neutral-500">{name}</p>
+        <p className="truncate text-base text-neutral-500">
+          {city}, {country}
+        </p>
         <div
           className="z-[20] flex items-center gap-2"
           onPointerDown={(e) => e.stopPropagation()}
@@ -118,7 +123,10 @@ const TTimezoneCard = ({
         </div>
       </div>
       <div className="flex gap-1.5 text-sm text-neutral-500">
-        <p>GMT {offset >= 0 ? `+${offset}h` : `${offset}h`}</p>.
+        <p>
+          {gmtName} {offset >= 0 ? `${gmtSign}${offset}h` : `${offset}h`}
+        </p>
+        .
         <div
           onPointerDown={(e) => e.stopPropagation()}
           onClick={(e) => e.stopPropagation()}

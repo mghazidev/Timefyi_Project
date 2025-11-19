@@ -1,10 +1,6 @@
 import React from "react";
 import { IconBaseProps } from "../types";
-const TaskIcon: React.FC<IconBaseProps> = ({
-  size = 48,
-  color = "currentColor",
-  className,
-}) => {
+const TaskIcon: React.FC<IconBaseProps> = ({ size = 48, className }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

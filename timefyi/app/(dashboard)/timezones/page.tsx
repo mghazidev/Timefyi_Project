@@ -10,6 +10,7 @@ import TrashIcon from "@/components/icons/TrashIcon";
 import { useTimezoneView } from "@/app/context/TimezoneViewContext";
 import { useUserTimezone } from "@/app/hooks/useUserTimezone";
 import { useTimezoneClock } from "@/app/hooks/useTimezoneClock";
+import { normalizeTimezone } from "@/lib/helpers";
 import {
   Dialog,
   DialogTrigger,
@@ -26,7 +27,6 @@ import {
 import {
   arrayMove,
   SortableContext,
-  useSortable,
   rectSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -37,13 +37,24 @@ const page = () => {
   const [globalTime, setGlobalTime, isRunning, setIsRunning] =
     useTimezoneClock();
 
-  const [timezones, setTimezones] = React.useState<
-    { id: string; name: string; offset: number }[]
-  >([]);
+  const [timezones, setTimezones] = React.useState<any[]>(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("userTimezones");
+      return stored ? JSON.parse(stored) : [];
+    }
+    return [];
+  });
 
   React.useEffect(() => {
-    if (userTimezone && timezones.length === 0) {
-      setTimezones([userTimezone]);
+    if (!userTimezone) return;
+
+    const stored = localStorage.getItem("userTimezones");
+    const parsed = stored ? JSON.parse(stored) : [];
+
+    if (parsed.length === 0) {
+      const normalized = normalizeTimezone(userTimezone);
+      setTimezones([normalized]);
+      localStorage.setItem("userTimezones", JSON.stringify([normalized]));
     }
   }, [userTimezone]);
 
@@ -59,16 +70,22 @@ const page = () => {
     });
   };
 
-  const handleAddTimezone = (tz: {
-    id: string;
-    name: string;
-    offset: number;
-  }) => {
-    setTimezones((prev) => [...prev, tz]);
+  const handleAddTimezone = (tz: any) => {
+    const normalized = normalizeTimezone(tz);
+
+    setTimezones((prev) => {
+      const updated = [...prev, normalized];
+      localStorage.setItem("userTimezones", JSON.stringify(updated));
+      return updated;
+    });
   };
 
   const handleDeleteTimezone = (id: string) => {
-    setTimezones((prev) => prev.filter((tz) => tz.id !== id));
+    setTimezones((prev) => {
+      const updated = prev.filter((tz) => tz.id !== id);
+      localStorage.setItem("userTimezones", JSON.stringify(updated));
+      return updated;
+    });
   };
 
   return (
@@ -93,7 +110,10 @@ const page = () => {
                 <SortableTimezoneCard
                   key={tz.id}
                   id={tz.id}
-                  name={tz.name}
+                  city={tz.city}
+                  country={tz.country}
+                  gmtName={tz.gmtName}
+                  gmtSign={tz.gmtSign}
                   offset={tz.offset}
                   globalTime={globalTime}
                   onGlobalTimeChange={setGlobalTime}
@@ -158,7 +178,7 @@ const page = () => {
                 <DialogTitle hidden></DialogTitle>
 
                 <TAddNewTimezoneCard
-                  onAddTimezone={(tz) => setTimezones((prev) => [...prev, tz])}
+                  onAddTimezone={handleAddTimezone}
                   defaultSearchMode={true}
                 />
               </DialogContent>
@@ -200,7 +220,10 @@ export default page;
 
 function SortableTimezoneCard({
   id,
-  name,
+  city,
+  country,
+  gmtName,
+  gmtSign,
   offset,
   globalTime,
   onGlobalTimeChange,
@@ -209,7 +232,10 @@ function SortableTimezoneCard({
   setIsClockRunning,
 }: {
   id: string;
-  name: string;
+  city: string;
+  country: string;
+  gmtName: string;
+  gmtSign: string;
   offset: any;
   globalTime: any;
   onGlobalTimeChange: any;
@@ -236,10 +262,13 @@ function SortableTimezoneCard({
     <div className="w-full" ref={setNodeRef} style={style}>
       <TTimezoneCard
         id={id}
-        name={name}
+        city={city}
+        country={country}
+        gmtName={gmtName}
+        gmtSign={gmtSign}
+        offset={offset}
         listeners={listeners}
         attributes={attributes}
-        offset={offset}
         globalTime={globalTime}
         onGlobalTimeChange={onGlobalTimeChange}
         onDelete={onDelete}
