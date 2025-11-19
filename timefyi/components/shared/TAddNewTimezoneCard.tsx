@@ -7,20 +7,7 @@ import { DateTime } from "luxon";
 import { timezoneData, TimezoneData } from "@/lib/timezoneData";
 import Fuse from "fuse.js";
 import Input from "../ui/input";
-interface UserTimezone {
-  id: string;
-  standardName: string;
-  gmtName: string;
-  gmtSign: string;
-  gmtOffset: string;
-  narrowOffset: string;
-  abbreviatedName: string;
-  unabbreviatedName: string;
-  name: string;
-  title: string;
-  city: string;
-  country: string;
-}
+import { UserTimezone } from "../types";
 
 type TAddNewTimezoneCardProps = {
   onAddTimezone: (tz: UserTimezone) => void;
