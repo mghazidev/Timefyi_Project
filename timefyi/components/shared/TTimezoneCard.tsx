@@ -39,8 +39,30 @@ const TTimezoneCard = ({
   const localTime = (globalTime + offset + 24) % 24;
   const { label, meridiem } = formatHoursToLabel(localTime);
 
+  const computeLocalDate = () => {
+    const now = new Date();
+    const utcMs = now.getTime() + now.getTimezoneOffset() * 60000;
+    const cityMs = utcMs + offset * 3600 * 1000;
+    return new Date(cityMs);
+  };
+
+  React.useEffect(() => {
+    setSelectedDate(computeLocalDate());
+  }, [globalTime, offset]);
+
+  const handleDateChange = (newDate: Date) => {
+    const utcMs = newDate.getTime() - offset * 3600 * 1000;
+    const utcDate = new Date(utcMs);
+
+    const globalHours =
+      utcDate.getUTCHours() +
+      utcDate.getUTCMinutes() / 60 +
+      utcDate.getUTCSeconds() / 3600;
+
+    onGlobalTimeChange(globalHours);
+  };
+
   const handleWaveformChange = (newLocalTime: number) => {
-    // stop automatic ticking while editing
     setIsClockRunning(false);
 
     const adjustedGlobalTime = (newLocalTime - offset + 24) % 24;
