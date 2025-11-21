@@ -24,14 +24,31 @@ const Page = () => {
   const [showSection3, setShowSection3] = React.useState(false);
   const [showSection4, setShowSection4] = React.useState(false);
   const [showSection5, setShowSection5] = React.useState(false);
+
   const [tasks, setTasks] = React.useState<
     { id: string; label: string; date: string; completed: boolean }[]
   >([]);
+
+  React.useEffect(() => {
+    const storedTasks = localStorage.getItem("tasks");
+    if (storedTasks) {
+      setTasks(JSON.parse(storedTasks));
+    }
+  }, []);
+
+  React.useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }, [tasks]);
+
   const [newTask, setNewTask] = React.useState("");
   const [selectedDate, setSelectedDate] = React.useState(getLocalDateString());
   const [newTaskDate, setNewTaskDate] = React.useState(getLocalDateString());
   const [isPomodoroPlaying, setIsPomodoroPlaying] = React.useState(false);
   const [activeTaskId, setActiveTaskId] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }, [tasks]);
 
   const handleGoToToday = () => {
     setSelectedDate(today);
@@ -48,12 +65,14 @@ const Page = () => {
 
   const handleSaveTask = () => {
     if (newTask.trim() === "") return;
+
     const newTaskObj = {
       id: `task-${Date.now()}`,
       label: newTask.trim(),
       date: newTaskDate,
       completed: false,
     };
+
     setTasks((prev) => [...prev, newTaskObj]);
     setNewTask("");
     setShowSection3(false);
