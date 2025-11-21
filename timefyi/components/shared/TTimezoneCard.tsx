@@ -50,17 +50,9 @@ const TTimezoneCard = ({
     setSelectedDate(computeLocalDate());
   }, [globalTime, offset]);
 
-  const handleDateChange = (newDate: Date) => {
-    const utcMs = newDate.getTime() - offset * 3600 * 1000;
-    const utcDate = new Date(utcMs);
+  const userOffset = -new Date().getTimezoneOffset() / 60;
 
-    const globalHours =
-      utcDate.getUTCHours() +
-      utcDate.getUTCMinutes() / 60 +
-      utcDate.getUTCSeconds() / 3600;
-
-    onGlobalTimeChange(globalHours);
-  };
+  const timeDifference = offset - userOffset;
 
   const handleWaveformChange = (newLocalTime: number) => {
     setIsClockRunning(false);
@@ -117,7 +109,7 @@ const TTimezoneCard = ({
           <button className="cursor-pointer text-zinc-500 hover:text-zinc-200">
             <EditIcon size={18} />
           </button>
-          {/* Delete */}
+
           <button
             className="cursor-pointer text-zinc-500 hover:text-zinc-200"
             onClick={handleDeleteClick}
@@ -142,6 +134,13 @@ const TTimezoneCard = ({
               {meridiem}
             </span>
           </p>
+          {timeDifference !== 0 && (
+            <span className="rounded-full bg-zinc-800 py-2 px-3 text-sm lg:text-xs xl:text-sm text-red-500">
+              {timeDifference > 0
+                ? `+${timeDifference}h`
+                : `-${Math.abs(timeDifference)}h`}
+            </span>
+          )}
         </div>
       </div>
       <div className="flex gap-1.5 text-sm text-neutral-500">
