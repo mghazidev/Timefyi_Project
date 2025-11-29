@@ -32,22 +32,20 @@ const Page = () => {
   >([]);
 
   React.useEffect(() => {
-    console.log("[LOAD] Loading tasks from localStorage...");
     const saved = localStorage.getItem("tasks");
     if (saved) {
       const parsed = JSON.parse(saved);
-      console.log("[LOAD] Parsed tasks:", parsed);
       setTasks(parsed);
     }
   }, []);
 
   const firstRender = React.useRef(true);
+
   React.useEffect(() => {
     if (firstRender.current) {
       firstRender.current = false;
       return;
     }
-    console.log("[SAVE] Saving tasks to localStorage...", tasks);
     localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks]);
 
