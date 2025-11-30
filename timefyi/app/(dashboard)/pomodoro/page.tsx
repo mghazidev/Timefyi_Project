@@ -27,8 +27,20 @@ const Page = () => {
   const [isPomodoroPlaying, setIsPomodoroPlaying] = React.useState(false);
   const [activeTaskId, setActiveTaskId] = React.useState<string | null>(null);
 
+  // const [tasks, setTasks] = React.useState<
+  //   { id: string; label: string; date: string; completed: boolean }[]
+  // >([]);
+
   const [tasks, setTasks] = React.useState<
-    { id: string; label: string; date: string; completed: boolean }[]
+    {
+      id: string;
+      label: string;
+      date: string;
+      completed: boolean;
+      type: "single" | "routine";
+      routine?: any;
+      completedDates?: any;
+    }[]
   >([]);
 
   React.useEffect(() => {
@@ -49,22 +61,6 @@ const Page = () => {
     localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks]);
 
-  // const [tasks, setTasks] = React.useState(() => {
-  //   const saved = localStorage.getItem("tasks");
-  //   return saved ? JSON.parse(saved) : [];
-  // });
-
-  // React.useEffect(() => {
-  //   const saved = localStorage.getItem("tasks");
-  //   if (saved) {
-  //     setTasks(JSON.parse(saved));
-  //   }
-  // }, []);
-
-  // React.useEffect(() => {
-  //   localStorage.setItem("tasks", JSON.stringify(tasks));
-  // }, [tasks]);
-
   const handleSaveTask = () => {
     if (newTask.trim() === "") return;
 
@@ -73,6 +69,7 @@ const Page = () => {
       label: newTask.trim(),
       date: newTaskDate,
       completed: false,
+      type: "single",
     };
 
     setTasks((prev: any) => [...prev, newTaskObj]);
@@ -80,16 +77,40 @@ const Page = () => {
     setMode("idle");
   };
 
+  // const handleSaveTask = () => {
+  //   if (newTask.trim() === "") return;
+
+  //   const newTaskObj = {
+  //     id: `task-${Date.now()}`,
+  //     label: newTask.trim(),
+  //     date: newTaskDate,
+  //     completed: false,
+  //   };
+
+  //   setTasks((prev: any) => [...prev, newTaskObj]);
+  //   setNewTask("");
+  //   setMode("idle");
+  // };
+
   const handleCancel = () => {
     setNewTask("");
     setMode("idle");
   };
 
-  const filteredTasks = tasks.filter(
-    (task: any) =>
+  // const filteredTasks = tasks.filter(
+  //   (task: any) =>
+  //     task.date === selectedDate &&
+  //     (selected === "pending" ? !task.completed : task.completed)
+  // );
+
+  const filteredTasks = tasks.filter((task: any) => {
+    if (task.type !== "single") return false;
+
+    return (
       task.date === selectedDate &&
       (selected === "pending" ? !task.completed : task.completed)
-  );
+    );
+  });
 
   const showSection2 =
     mode === "idle" && filteredTasks.length === 0 && selected === "pending";
